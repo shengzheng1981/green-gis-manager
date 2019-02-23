@@ -1,0 +1,44 @@
+.esriControlsBR{
+    display: none;
+}
+
+#_internal_LabelLayer_layer {
+    pointer-events: none;
+}
+/* popup */
+.esriPopup .titleButton.maximize, .esriPopup .actionsPane{
+    display: none;
+}
+
+.dijitMenu .dijitReset {
+    padding:5px;
+}
+
+.dijitButtonNode .dijitArrowButtonInner{
+    display: inline-block;
+    width: 0;
+    height: 0;
+    vertical-align: middle;
+    border-top: 4px dashed;
+    border-right: 4px solid transparent;
+    border-left: 4px solid transparent;
+}
+.dijitComboButton{
+    margin: 0px !important;
+    border-radius: 3px;
+    color: white;
+    background-color: #f05050;
+}
+.dijitButtonNode{
+    border: 0px solid gray;
+    padding: 8px 15px;
+}
+.dijitDownArrowButton{
+    padding: 5px;
+}
+.esriPrint{
+    padding: 0px;
+}
+.tundra{
+    width: 80px;
+}

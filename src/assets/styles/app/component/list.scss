@@ -1,0 +1,82 @@
+.list{
+    overflow-y: auto;
+}
+
+.list .list-header{
+    font-weight: bold;
+    padding: 6px 15px;
+    border-bottom: 1px solid #eee;
+    transition: border .1s;
+    display: grid;
+}
+.list .list-body{
+    overflow-y: auto;
+}
+.list .list-grid-item{
+    padding: 6px 10px;
+    border-bottom: 1px solid #eee;
+    transition: border .1s;
+    cursor: pointer;
+    display: grid;
+    align-items: center;
+}
+.list .list-grid-item.list-grid-item-large{
+    min-height: 40px;
+}
+.list .list-grid-item:hover {
+    box-shadow: 0 0 8px 2px #ccc;
+}
+.list .list-grid-item.active{
+    background: $color-primary-bg;
+    color: $color-primary;
+    border-right: 4px solid $color-primary;
+}
+.list .list-grid-item.list-grid-item-border {
+    border-left-style: solid;
+    border-left-width: 2px;
+}
+
+
+.list-group {
+    margin-bottom: 0px;
+}
+.list-group .list-group-header{
+    padding: 8px 20px;
+    position: relative;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+}
+.list-group .list-group-body{
+    background: #f0f0f0;
+}
+.list-group .list-grid-item {
+    padding-left: 40px;
+}
+.list-group .list-group-header:hover{
+    box-shadow: 0 0 8px 2px #ccc;
+}
+.list-group .list-group-header.active{
+    background: $color-primary-bg;
+    color: $color-primary;
+    border-right: 4px solid $color-primary;
+}
+.list-group .list-group-header .expand-icon{
+    color: #aaa;
+    width: 14px;
+}
+.list-group .list-group-header .title{
+    margin-left:10px;
+    color: #333;
+}
+
+
+.list-pop-item {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+}
+.list-pop-item .pop-title{
+    font-weight: bold;
+}
+.list-pop-item .pop-content{
+
+}

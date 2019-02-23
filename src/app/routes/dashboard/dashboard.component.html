@@ -1,0 +1,64 @@
+
+<!--<div style="position: absolute;height: 100%;width:100%;overflow-y: auto;text-align: center;">-->
+  <!--<img src="assets/img/dashboard/dashboard.png" alt="">-->
+<!--</div>-->
+
+<div class="system-content">
+  <div class="system-left">
+    <div class="system-left-header">
+      <h5 class="title">Manager</h5>
+    </div>
+    <div class="system-left-body">
+      <div class="router-area">
+        <div class="router-group">
+          <div class="router-group-header" (click)="layoutVisible =!layoutVisible">
+            <span class="expand-icon">
+              <i class="fas fa-caret-right caret-down" [ngClass]="{'rotate-caret': layoutVisible}"></i>
+            </span>
+            <span class="title">Data</span>
+          </div>
+          <div class="router-group-body" *ngIf="layoutVisible">
+            <div class="router-item" [routerLinkActive]="['active']">
+              <div class="router-item-content" [routerLink]="['feature']">
+                <i class="fas fa-table item-icon"></i>
+                <span class="router-item-content-title"> Feature</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="router-group">
+          <div class="router-group-header" (click)="mapVisible = !mapVisible">
+            <span class="expand-icon">
+              <i class="fas fa-caret-right caret-down" [ngClass]="{'rotate-caret': mapVisible}"></i>
+            </span>
+            <span class="title">Sample</span>
+          </div>
+          <div class="router-group-body" *ngIf="mapVisible">
+            <div class="router-item" [routerLinkActive]="['active']">
+              <div class="router-item-content" [routerLink]="['geojson']">
+                <i class="fas fa-map item-icon"></i>
+                <span class="router-item-content-title"> GeoJSON</span>
+              </div>
+            </div>
+            <div class="router-item" [routerLinkActive]="['active']">
+              <div class="router-item-content" [routerLink]="['backend']">
+                <i class="fas fa-map item-icon"></i>
+                <span class="router-item-content-title"> Backend</span>
+              </div>
+            </div>
+            <div class="router-item" [routerLinkActive]="['active']">
+              <div class="router-item-content" [routerLink]="['frontend']">
+                <i class="fas fa-map item-icon"></i>
+                <span class="router-item-content-title"> Frontend</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div class="system-body">
+    <router-outlet></router-outlet>
+  </div>
+</div>

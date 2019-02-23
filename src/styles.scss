@@ -1,0 +1,19 @@
+/* You can add global styles to this file, and also import other style files */
+/* You can add global styles to this file, and also import other style files */
+
+//== Vendor
+//== zorro
+@import '../node_modules/ng-zorro-antd/ng-zorro-antd.min.css';
+//== leaflet
+@import '../node_modules/leaflet/dist/leaflet.css';
+
+//== Bootstrap
+/*@import "../node_modules/sw-shared-lib/styles/bootstrap.scss";*/
+@import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
+//== FontAwesome
+@import "../node_modules/@fortawesome/fontawesome-free/css/all.css";
+
+//== Theme
+@import "./assets/styles/theme.scss";
+//== Application
+@import "./assets/styles/app.scss";

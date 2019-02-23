@@ -1,0 +1,46 @@
+.ngg-checkbox{
+  cursor: pointer;
+  display: inline-block;
+  width: 17px;
+  height: 17px;
+  border: 1px solid #aaa;
+  position: relative;
+  border-radius: 3px;
+  vertical-align: middle;
+  box-sizing: border-box;
+  transition: border-color ease .2s;
+}
+.ngg-checkbox .checked:before{
+/*  -webkit-box-shadow: 1px 0 0 3px #f3f3f3;
+  box-shadow: 1px 0 0 3px #f3f3f3;*/
+  top: 10px;
+  left: 9px;
+  -webkit-transform: rotate(-130deg) scale(.8);
+  transform: rotate(-130deg) scale(.8);
+  -webkit-transform-origin: left top;
+  transform-origin: left top;
+  -webkit-animation: lcchekedkeyframetop .2s ease 0s forwards;
+  animation: lcchekedkeyframetop .2s ease 0s forwards;
+}
+.ngg-checkbox .checked:after{
+  border-radius: 5px;
+  top: 4px;
+  left: 3px;
+  -webkit-transform: rotate(-38deg) scale(.8);
+  transform: rotate(-38deg) scale(.8);
+  -webkit-transform-origin: left top;
+  transform-origin: left top;
+  -webkit-animation: lcchekedkeyframebottom .1s ease 0s forwards;
+  animation: lcchekedkeyframebottom .1s ease 0s forwards;
+}
+
+.ngg-checkbox .checked:before, .ngg-checkbox .checked:after{
+  content: '';
+  background: $color-primary;
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+@keyframes lcchekedkeyframetop{0%,50%{height:0}100%{height:17px}}@keyframes lcchekedkeyframebottom{0%{height:0}100%{height:10px}}

@@ -1,0 +1,67 @@
+
+/** avatar start **/
+.avatar-text {
+    position: relative;
+    text-align: center;
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: middle;
+    background: $color_primary;
+    opacity : 0.8;
+    font-size: 25px;
+    height: 50px;
+    line-height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    color: #ffffff;
+    cursor:pointer;
+}
+
+.avatar-text:hover{
+    opacity:1;
+    box-shadow: 0 2px 5px 1px $color-primary-hover;
+}
+
+.avatar-success {
+    background: $color-success;
+}
+.avatar-success:hover {
+    box-shadow: 0 2px 5px 1px rgba(34,215,187,.45);
+}
+.avatar-warning {
+    background: $color-warning;
+}
+.avatar-warning:hover {
+    box-shadow: 0 2px 5px 1px rgba(255,196,66,.45);
+}
+.avatar-danger {
+    background: $color-danger;
+}
+.avatar-danger:hover {
+    box-shadow: 0 2px 5px 1px rgba(255,91,87,.45);
+}
+/*.avatar-face .avatar-text i:hover{
+    -webkit-transform: translateX(5px);
+    transform: translateX(5px)
+}*/
+/*.avatar-face img {
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    background: #ffffff;
+    -webkit-box-shadow: 0 0 1px #ddd;
+    box-shadow: 0 0 1px #ddd
+}*/
+.avatar-text-sm {
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+    font-size: 14px;
+}
+.avatar-text-xs {
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    font-size: 10px;
+}
+/** avatar end **/

@@ -1,0 +1,19 @@
+/*浏览器滚动条样式*/
+::-webkit-scrollbar {
+    width: 6px;
+    height: 12px
+}
+::-webkit-scrollbar-button:end:increment,
+::-webkit-scrollbar-button:start:decrement,
+::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 5px
+}
+::-webkit-scrollbar-button:end:increment,
+::-webkit-scrollbar-button:start:decrement {
+    display: none
+}
+::-webkit-scrollbar-track-piece {
+    background-color: #f0f0f0;
+    border-radius: 3px
+}

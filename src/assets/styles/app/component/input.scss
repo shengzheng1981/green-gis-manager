@@ -1,0 +1,74 @@
+.form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control {
+  background-color: #ffffff;
+  opacity: 1;
+}
+
+.input-group{
+  width: 100%;
+}
+
+.input-group-addon{
+  background-color: #fdfdfd;
+  width :120px;
+}
+
+.ng-valid[required], .ng-valid.required  {
+  border-left: 2px solid #22d7bb; /* green */
+}
+
+.ng-invalid:not(form)  {
+  border-left: 2px solid #ff5b57; /* red */
+}
+
+.text-success{
+  color:#22d7bb;
+}
+.text-danger{
+  color: #ff5b57;
+}
+
+/** text-fixed-width overflow start **/
+.text-fixed-width-20 {
+  overflow: hidden; /*自动隐藏文字*/
+  text-overflow: ellipsis;/*文字隐藏后添加省略号*/
+  white-space: nowrap;/*强制不换行*/
+  width: 20em;/*不允许出现半汉字截断*/
+  display: block;
+}
+.text-fixed-width-15 {
+  overflow: hidden; /*自动隐藏文字*/
+  text-overflow: ellipsis;/*文字隐藏后添加省略号*/
+  white-space: nowrap;/*强制不换行*/
+  width: 20em;/*不允许出现半汉字截断*/
+  font-size: 1em;
+  display: block;
+}
+.text-fixed-width-10 {
+  overflow: hidden; /*自动隐藏文字*/
+  text-overflow: ellipsis;/*文字隐藏后添加省略号*/
+  white-space: nowrap;/*强制不换行*/
+  width: 10em;/*不允许出现半汉字截断*/
+  display: block;
+}
+.text-fixed-width {
+  overflow: hidden; /*自动隐藏文字*/
+  text-overflow: ellipsis;/*文字隐藏后添加省略号*/
+  white-space: nowrap;/*强制不换行*/
+  display: block;
+}
+/** text-fixed-width overflow end **/
+.ngg-input-required{
+  background: #ff5b57;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 400;
+  height: 20px;
+  line-height: 20px;
+  margin: 7px 0;
+  padding: 0 10px;
+  position: absolute;
+  right: 10px;
+  top: 0px;
+  z-index: 2;
+}

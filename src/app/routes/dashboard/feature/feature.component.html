@@ -1,0 +1,53 @@
+<div class="module-content">
+    <div class="module-header">
+        <h5 class="module-header-title"><i class="fas fa-table"></i>Feature(Class)</h5>
+        <div class="module-header-action">
+            <label class="btn btn-success">
+                <input type="file" name="file" style="display: none;" (change)="publish($event)" multiple/>
+                Publish(SHP)
+            </label>
+        </div>
+    </div>
+    <div class="module-body">
+        <div class="panel">
+            <div class="panel-heading">
+                <span class="panel-title">FeatureClass List</span>
+            </div>
+            <div class="panel-body">
+                <div class="list">
+                    <div class="list-header list-grid1">
+                        <span>
+                            Name
+                        </span>
+                        <span style="justify-self: center">
+                            Geometry Type
+                        </span>
+                        <span style="justify-self: center">
+                            Tile
+                        </span>
+                        <span style="justify-self: center">
+                            Cache
+                        </span>
+                        <span style="justify-self: center">
+                            Action
+                        </span>
+                    </div>
+                    <div class="list-body">
+
+                        <div *ngFor="let feature of features" class="list-grid-item list-grid1">
+                            <span>{{feature.name}}</span>
+                            <span style="justify-self: center">{{feature.geomType}}</span>
+                            <span style="justify-self: center">{{feature.tile || false}}</span>
+                            <span style="justify-self: center">{{feature.cache || false}}</span>
+                            <div style="justify-self: center">
+                                <button class="btn btn-danger btn-xs" (click)="delete(feature)">Delete</button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

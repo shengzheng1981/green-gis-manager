@@ -1,0 +1,128 @@
+/* router-item */
+//路由表：二级或三级路由
+//左右布局（内容/操作）
+.router-item{
+  display : grid;
+  grid-gap: 10px;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  padding : 0px 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.router-item-content{
+  cursor: pointer;
+  padding: 10px 0px;
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: auto 1fr;
+  grid-template-areas: "icon-area title-area";
+  align-items: center;
+}
+
+.router-item-action{
+  cursor: pointer;
+}
+
+.router-item:hover{
+  text-decoration: none;
+  box-shadow: 0 0 8px 2px #ccc;
+}
+.router-item.active{
+  background: $color-primary-bg;
+  color: $color-primary;
+  border-right: 4px solid $color-primary;
+}
+.router-item-content:focus,
+.router-item-content:visited {
+  outline: none;
+}
+.router-item-content .item-icon{
+  width: 16px;
+}
+.router-item-content .router-item-content-icon{
+  grid-area : icon-area;
+  width: 16px;
+}
+.router-item-content .router-item-content-title{
+  grid-area : title-area;
+  overflow: hidden; /*自动隐藏文字*/
+  text-overflow: ellipsis;/*文字隐藏后添加省略号*/
+  white-space: nowrap;/*强制不换行*/
+}
+.router-item-content .router-item-content-title,
+.router-item-content:hover .router-item-content-title{
+  color: #333;
+}
+
+//路由表：路由分组，展开收缩分组
+//
+.router-group .router-group-header{
+  padding: 8px 20px;
+  position: relative;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f0f0;
+}
+.router-group .router-group-body{
+  background: #f0f0f0;
+}
+.router-group .router-item {
+  padding-left: 30px;
+}
+.router-group .router-group-header:hover{
+  box-shadow: 0 0 8px 2px #ccc;
+}
+.router-group .router-group-header.active{
+  background: $color-primary-bg;
+  color: $color-primary;
+  border-right: 4px solid $color-primary;
+}
+.router-group .router-group-header .expand-icon{
+  color: #aaa;
+  width: 14px;
+}
+.router-group .router-group-header .title{
+  margin-left:10px;
+  color: #333;
+}
+.router-group .router-group-header:focus{
+  outline: none;
+}
+
+//标签页式路由：四级路由
+.router-tabs {
+  padding : 0px 10px;
+  font-size: 14px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  background: #fdfdfd;
+}
+.router-tabs > li  {
+  display: inline-block;
+  margin-right: 2px;
+}
+.router-tabs > li > a{
+  display: block;
+  border-radius: 0px;
+  min-width: 80px;
+  text-align: center;
+  padding: 10px 15px;
+  color: #333;
+  cursor: pointer;
+  outline: none;
+  text-decoration: none;
+}
+.router-tabs > li.active > a {
+  border-bottom: solid 2px $color-primary;
+}
+.router-tabs > li.active > a,
+.router-tabs > li.active > a:focus,
+.router-tabs > li.active > a:hover{
+  color: $color-primary;
+}
+.router-tabs > li > a:focus,
+.router-tabs > li > a:hover {
+  border-bottom: solid 2px $color-primary;
+}
