@@ -14,8 +14,6 @@ import {PaginationModule} from 'ngx-bootstrap/pagination';
 import {ProgressbarModule} from 'ngx-bootstrap/progressbar';
 import {CollapseModule} from 'ngx-bootstrap/collapse';
 
-import { UploadComponent } from './upload/upload.component';
-import { LeafgaoComponent } from './leafgao/leafgao.component';
 import { FeatureComponent } from './feature/feature.component';
 import { GeojsonComponent } from './geojson/geojson.component';
 import { BackendComponent } from './backend/backend.component';
@@ -30,10 +28,6 @@ const routes: Routes = [
             {
                 path: 'feature',
                 component: FeatureComponent
-            },
-            {
-                path: 'upload',
-                component: UploadComponent
             },
             {
                 path: 'geojson',
@@ -70,7 +64,7 @@ const routes: Routes = [
         ProgressbarModule.forRoot(),
         CollapseModule.forRoot()
     ],
-    declarations: [DashboardComponent, UploadComponent, LeafgaoComponent, FeatureComponent, GeojsonComponent, BackendComponent, FrontendComponent]
+    declarations: [DashboardComponent, FeatureComponent, GeojsonComponent, BackendComponent, FrontendComponent]
 })
 export class DashboardModule {
 }
