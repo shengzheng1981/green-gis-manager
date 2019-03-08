@@ -86,6 +86,23 @@ export class FrontendComponent implements OnInit {
                                         });
                                         ctx.fill();
                                         ctx.stroke();
+                                    } else if (feature.geometry.type === 'MultiLineString') {
+                                        ctx.beginPath();
+                                        feature.geometry.coordinates.forEach( line => {
+                                            line.forEach( (point,index) => {
+                                                let lng = point[0], lat = point[1];
+                                                let tileXY = this.lngLat2Tile(lng, lat, coords.z);
+                                                let pixelXY = this.lngLat2Pixel(lng, lat, coords.z);
+                                                let pixelX = pixelXY.pixelX + (tileXY.tileX - coords.x) * 256;
+                                                let pixelY = pixelXY.pixelY + (tileXY.tileY - coords.y) * 256;
+                                                if (index === 0){
+                                                    ctx.moveTo(pixelX, pixelY);
+                                                } else {
+                                                    ctx.lineTo(pixelX, pixelY);
+                                                }
+                                            });
+                                        });
+                                        ctx.stroke();
                                     } else if (feature.geometry.type === 'MultiPolygon') {
                                         feature.geometry.coordinates.forEach( polygon => {
                                             ctx.beginPath();

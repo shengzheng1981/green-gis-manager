@@ -2,6 +2,7 @@ import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {CircleMarker, GeoJSON, Map, TileLayer} from 'leaflet';
 import {FeatureService} from '../../../shared/services/feature.service';
 import {HttpClient} from '@angular/common/http';
+import {ConfigService} from '../../../shared/services/config.service';
 
 @Component({
   selector: 'app-backend',
@@ -15,7 +16,7 @@ export class BackendComponent implements OnInit {
 
     @ViewChild('map') mapDiv: ElementRef;
 
-    constructor(private http: HttpClient, private featureService: FeatureService) {
+    constructor(private http: HttpClient, private featureService: FeatureService, private configService: ConfigService) {
     }
 
     ngOnInit() {
@@ -40,7 +41,7 @@ export class BackendComponent implements OnInit {
             if (item.layer) {
                 item.layer.addTo(this.map);
             } else {
-                item.layer = new TileLayer('http://localhost:4000/tiles/image/' + item.name  + '/{x}/{y}/{z}', {
+                item.layer = new TileLayer(this.configService.config.api.web_api + '/tiles/image/' + item.name  + '/{x}/{y}/{z}', {
                     maxZoom: 18
                 });
                 item.layer.addTo(this.map);

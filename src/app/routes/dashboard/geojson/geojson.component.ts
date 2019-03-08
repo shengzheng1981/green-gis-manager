@@ -1,5 +1,5 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {Map, TileLayer, CircleMarker, GeoJSON} from 'leaflet';
+import {Map, TileLayer, CircleMarker, GeoJSON, Canvas} from 'leaflet';
 import {HttpClient} from '@angular/common/http';
 import {FeatureService} from '../../../shared/services/feature.service';
 
@@ -22,8 +22,8 @@ export class GeojsonComponent implements OnInit {
         this.featureService.getAll().subscribe( res => this.features = res );
         this.map = new Map(this.mapDiv.nativeElement, {
             minZoom: 2,
-            maxZoom: 18
-            //renderer: new SVG()
+            maxZoom: 18,
+            renderer: new Canvas()
         })//.setView([29.576753, 105.030221], 13);
             .setView([18.267234, 109.522854], 13);
         let tile = new TileLayer('http://{s}.is.autonavi.com/appmaptile?style=7&x={x}&y={y}&z={z}&lang=zh_cn&size=1&scale=1', {
@@ -31,7 +31,9 @@ export class GeojsonComponent implements OnInit {
             subdomains: ['webrd01', 'webrd02', 'webrd03', 'webrd04']
         });
         tile.addTo(this.map);
-
+        this.map.on("click", (e) => {
+            console.log(e);
+        });
     }
 
     switch(item) {
@@ -43,7 +45,7 @@ export class GeojsonComponent implements OnInit {
                 this.http.get(this.featureService.url + '/geojson/' + item.name).subscribe(res => {
                     if (item.geomType == 1) {
                         item.layer = new GeoJSON(<any>(res), {
-                            pointToLayer: function (geoJsonPoint, latlng) {
+                            pointToLayer:  (geoJsonPoint, latlng) => {
                                 return new CircleMarker(latlng, {
                                     radius: 6,
                                     fillColor: 'red',
@@ -51,6 +53,32 @@ export class GeojsonComponent implements OnInit {
                                     weight: 1,
                                     opacity: 1,
                                     fillOpacity: 0.5
+                                });
+                            },
+                            onEachFeature:   (feature, layer) => {
+                                layer.on({
+                                    click:  (e) => {
+                                        console.log(e.target);
+                                    },
+                                    mouseover: (e) => {
+                                        const layer = e.target;
+
+                                        layer.setStyle({
+                                            radius: 6,
+                                            fillColor: 'rgb(0, 255, 255)',
+                                            color: 'rgb(0, 255, 255)',
+                                            weight: 1,
+                                            opacity: 1,
+                                            fillOpacity: 0.5
+                                        });
+
+                                        if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                                            layer.bringToFront();
+                                        }
+                                    },
+                                    mouseout: (e) => {
+                                        item.layer.resetStyle(e.target);
+                                    }
                                 });
                             }
                         });
