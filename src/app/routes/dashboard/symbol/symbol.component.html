@@ -1,0 +1,424 @@
+<div class="module-content">
+    <div class="module-header">
+        <h5 class="module-header-title"><i class="fas fa-dot-circle"></i>Symbol</h5>
+        <div class="module-header-action">
+
+        </div>
+    </div>
+    <div class="module-body">
+        <div class="panel">
+            <div class="panel-heading">
+                <span class="panel-title">Symbol Type</span>
+            </div>
+            <div class="panel-body">
+                <div class="list">
+                    <div class="list-body">
+                        <div *ngFor="let item of types" class="list-grid-item list-grid-item-large"
+                             [ngClass]="{'active': option.type && item.name == option.type.name}"
+                             (click)="active(item)">
+                            <span>{{item.name}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel">
+            <div class="panel-heading">
+                <span class="panel-title">{{option.type.name}}</span>
+            </div>
+            <div class="panel-body" [ngSwitch]="option.type.code">
+                <div class="table-container" *ngSwitchCase="10">
+                    <div class="table-toolbar">
+                        <button class="btn btn-primary" [disabled]="false" (click)="createSymbol()">Add</button>
+                    </div>
+                    <nz-table #fieldTable [nzFrontPagination]="false" [nzData]="symbols"
+                              [nzShowPagination]="false" [nzScroll]="{'y': '500px'}">
+                        <thead>
+                        <tr>
+                            <!--<th nzShowCheckbox [(nzChecked)]="option.field.all_checked" [nzIndeterminate]="option.field.indeterminate" (nzCheckedChange)="checkAllFields($event)"></th>-->
+                            <th style="width: 200px;">Name</th>
+                            <th style="width: 120px;">Radius</th>
+                            <th style="width: 120px;">Fill Color</th>
+                            <th style="width: 120px;">Fill Opacity</th>
+                            <th style="width: 120px;">Stroke Width</th>
+                            <th style="width: 120px;">Stroke Color</th>
+                            <th style="width: 120px;">Stroke Opacity</th>
+                            <th style="text-align: center">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let item of fieldTable.data">
+                            <!--<td nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="refreshFieldStatus()"></td>-->
+                            <td style="width: 200px;">
+                                <div class="editable-cell">
+                                    <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
+                                        {{item.name}}
+                                    </div>
+                                    <div class="editable-cell-input-wrapper" *ngIf="item.edit">
+                                        <input type="text" nz-input [(ngModel)]="item.name_2">
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="width: 120px;">
+                                <div class="editable-cell">
+                                    <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
+                                        {{item.style.radius}}
+                                    </div>
+                                    <div class="editable-cell-input-wrapper" *ngIf="item.edit">
+                                        <input type="text" nz-input [(ngModel)]="item.style_2.radius">
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="width: 120px;">
+                                <div class="editable-cell">
+                                    <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
+                                        {{item.style.fillColor}}
+                                    </div>
+                                    <div class="editable-cell-input-wrapper" *ngIf="item.edit">
+                                        <input type="color" nz-input [(ngModel)]="item.style_2.fillColor">
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="width: 120px;">
+                                <div class="editable-cell">
+                                    <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
+                                        {{item.style.fillOpacity}}
+                                    </div>
+                                    <div class="editable-cell-input-wrapper" *ngIf="item.edit">
+                                        <input type="text" nz-input [(ngModel)]="item.style_2.fillOpacity">
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="width: 120px;">
+                                <div class="editable-cell">
+                                    <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
+                                        {{item.style.weight}}
+                                    </div>
+                                    <div class="editable-cell-input-wrapper" *ngIf="item.edit">
+                                        <input type="text" nz-input [(ngModel)]="item.style_2.weight">
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="width: 120px;">
+                                <div class="editable-cell">
+                                    <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
+                                        {{item.style.color}}
+                                    </div>
+                                    <div class="editable-cell-input-wrapper" *ngIf="item.edit">
+                                        <input type="color" nz-input [(ngModel)]="item.style_2.color">
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="width: 120px;">
+                                <div class="editable-cell">
+                                    <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
+                                        {{item.style.opacity}}
+                                    </div>
+                                    <div class="editable-cell-input-wrapper" *ngIf="item.edit">
+                                        <input type="text" nz-input [(ngModel)]="item.style_2.opacity">
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="table-action">
+                                    <ng-container *ngIf="!item.edit">
+                                        <button class="btn btn-primary" (click)="startSymbolEdit(item)">Edit</button>
+                                    </ng-container>
+                                    <ng-container *ngIf="item.edit">
+                                        <button class="btn btn-primary" (click)="saveSymbolEdit(item)">Save</button>
+                                        <button class="btn btn-primary" (click)="cancelSymbolEdit(item)">Cancel</button>
+                                    </ng-container>
+                                    <button class="btn btn-primary" (click)="deleteSymbol(item)">Delete</button>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </nz-table>
+                </div>
+                <div class="table-container" *ngSwitchCase="11">
+                    <div class="table-toolbar">
+                        <button class="btn btn-primary" [disabled]="false" (click)="createSymbol()">Add</button>
+                    </div>
+                    <nz-table #fieldTable [nzFrontPagination]="false" [nzData]="symbols"
+                              [nzShowPagination]="false" [nzScroll]="{'y': '500px'}">
+                        <thead>
+                        <tr>
+                            <!--<th nzShowCheckbox [(nzChecked)]="option.field.all_checked" [nzIndeterminate]="option.field.indeterminate" (nzCheckedChange)="checkAllFields($event)"></th>-->
+                            <th style="width: 200px;">Name</th>
+                            <th style="width: 120px;">Width</th>
+                            <th style="width: 120px;">Height</th>
+                            <th style="width: 120px;">AnchorX</th>
+                            <th style="width: 120px;">AnchorY</th>
+                            <th style="width: 120px;">Opacity</th>
+                            <th style="width: 120px;">Icon</th>
+                            <th style="text-align: center">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let item of fieldTable.data">
+                            <!--<td nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="refreshFieldStatus()"></td>-->
+                            <td style="width: 200px;">
+                                <div class="editable-cell">
+                                    <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
+                                        {{item.name}}
+                                    </div>
+                                    <div class="editable-cell-input-wrapper" *ngIf="item.edit">
+                                        <input type="text" nz-input [(ngModel)]="item.name_2">
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="width: 120px;">
+                                <div class="editable-cell">
+                                    <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
+                                        {{item.style.width}}
+                                    </div>
+                                    <div class="editable-cell-input-wrapper" *ngIf="item.edit">
+                                        <input type="text" nz-input [(ngModel)]="item.style_2.width">
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="width: 120px;">
+                                <div class="editable-cell">
+                                    <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
+                                        {{item.style.height}}
+                                    </div>
+                                    <div class="editable-cell-input-wrapper" *ngIf="item.edit">
+                                        <input type="text" nz-input [(ngModel)]="item.style_2.height">
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="width: 120px;">
+                                <div class="editable-cell">
+                                    <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
+                                        {{item.style.anchorX}}
+                                    </div>
+                                    <div class="editable-cell-input-wrapper" *ngIf="item.edit">
+                                        <input type="text" nz-input [(ngModel)]="item.style_2.anchorX">
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="width: 120px;">
+                                <div class="editable-cell">
+                                    <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
+                                        {{item.style.anchorY}}
+                                    </div>
+                                    <div class="editable-cell-input-wrapper" *ngIf="item.edit">
+                                        <input type="text" nz-input [(ngModel)]="item.style_2.anchorY">
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="width: 120px;">
+                                <div class="editable-cell">
+                                    <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
+                                        {{item.style.opacity}}
+                                    </div>
+                                    <div class="editable-cell-input-wrapper" *ngIf="item.edit">
+                                        <input type="text" nz-input [(ngModel)]="item.style_2.opacity">
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="width: 120px;">
+                                <div class="editable-cell">
+                                    <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
+                                        {{item.style.marker}}
+                                    </div>
+                                    <div class="editable-cell-input-wrapper" *ngIf="item.edit">
+                                        <label class="btn btn-success">
+                                            <input type="file" name="file" style="display: none;" (change)="upload($event, item)" accept="image/*"/>
+                                            Icon
+                                        </label>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="table-action">
+                                    <ng-container *ngIf="!item.edit">
+                                        <button class="btn btn-primary" (click)="startSymbolEdit(item)">Edit</button>
+                                    </ng-container>
+                                    <ng-container *ngIf="item.edit">
+                                        <button class="btn btn-primary" (click)="saveSymbolEdit(item)">Save</button>
+                                        <button class="btn btn-primary" (click)="cancelSymbolEdit(item)">Cancel</button>
+                                    </ng-container>
+                                    <button class="btn btn-primary" (click)="deleteSymbol(item)">Delete</button>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </nz-table>
+                </div>
+                <div class="table-container" *ngSwitchCase="20">
+                    <div class="table-toolbar">
+                        <button class="btn btn-primary" [disabled]="false" (click)="createSymbol()">Add</button>
+                    </div>
+                    <nz-table #fieldTable [nzFrontPagination]="false" [nzData]="symbols"
+                              [nzShowPagination]="false" [nzScroll]="{'y': '500px'}">
+                        <thead>
+                        <tr>
+                            <!--<th nzShowCheckbox [(nzChecked)]="option.field.all_checked" [nzIndeterminate]="option.field.indeterminate" (nzCheckedChange)="checkAllFields($event)"></th>-->
+                            <th style="width: 200px;">Name</th>
+                            <th style="width: 120px;">Width</th>
+                            <th style="width: 120px;">Color</th>
+                            <th style="width: 120px;">Opacity</th>
+                            <th style="text-align: center">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let item of fieldTable.data">
+                            <!--<td nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="refreshFieldStatus()"></td>-->
+                            <td style="width: 200px;">
+                                <div class="editable-cell">
+                                    <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
+                                        {{item.name}}
+                                    </div>
+                                    <div class="editable-cell-input-wrapper" *ngIf="item.edit">
+                                        <input type="text" nz-input [(ngModel)]="item.name_2">
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="width: 120px;">
+                                <div class="editable-cell">
+                                    <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
+                                        {{item.style?.weight}}
+                                    </div>
+                                    <div class="editable-cell-input-wrapper" *ngIf="item.edit">
+                                        <input type="text" nz-input [(ngModel)]="item.style_2.weight">
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="width: 120px;">
+                                <div class="editable-cell">
+                                    <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
+                                        {{item.style?.color}}
+                                    </div>
+                                    <div class="editable-cell-input-wrapper" *ngIf="item.edit">
+                                        <input type="color" nz-input [(ngModel)]="item.style_2.color">
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="width: 120px;">
+                                <div class="editable-cell">
+                                    <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
+                                        {{item.style?.opacity}}
+                                    </div>
+                                    <div class="editable-cell-input-wrapper" *ngIf="item.edit">
+                                        <input type="text" nz-input [(ngModel)]="item.style_2.opacity">
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="table-action">
+                                    <ng-container *ngIf="!item.edit">
+                                        <button class="btn btn-primary" (click)="startSymbolEdit(item)">Edit</button>
+                                    </ng-container>
+                                    <ng-container *ngIf="item.edit">
+                                        <button class="btn btn-primary" (click)="saveSymbolEdit(item)">Save</button>
+                                        <button class="btn btn-primary" (click)="cancelSymbolEdit(item)">Cancel</button>
+                                    </ng-container>
+                                    <button class="btn btn-primary" (click)="deleteSymbol(item)">Delete</button>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </nz-table>
+                </div>
+                <div class="table-container" *ngSwitchCase="30">
+                    <div class="table-toolbar">
+                        <button class="btn btn-primary" [disabled]="false" (click)="createSymbol()">Add</button>
+                    </div>
+                    <nz-table #fieldTable [nzFrontPagination]="false" [nzData]="symbols"
+                              [nzShowPagination]="false" [nzScroll]="{'y': '500px'}">
+                        <thead>
+                        <tr>
+                            <!--<th nzShowCheckbox [(nzChecked)]="option.field.all_checked" [nzIndeterminate]="option.field.indeterminate" (nzCheckedChange)="checkAllFields($event)"></th>-->
+                            <th style="width: 200px;">Name</th>
+                            <th style="width: 120px;">Fill Color</th>
+                            <th style="width: 120px;">Fill Opacity</th>
+                            <th style="width: 120px;">Stroke Width</th>
+                            <th style="width: 120px;">Stroke Color</th>
+                            <th style="width: 120px;">Stroke Opacity</th>
+                            <th style="text-align: center">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let item of fieldTable.data">
+                            <!--<td nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="refreshFieldStatus()"></td>-->
+                            <td style="width: 200px;">
+                                <div class="editable-cell">
+                                    <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
+                                        {{item.name}}
+                                    </div>
+                                    <div class="editable-cell-input-wrapper" *ngIf="item.edit">
+                                        <input type="text" nz-input [(ngModel)]="item.name_2">
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="width: 120px;">
+                                <div class="editable-cell">
+                                    <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
+                                        {{item.style?.fillColor}}
+                                    </div>
+                                    <div class="editable-cell-input-wrapper" *ngIf="item.edit">
+                                        <input type="color" nz-input [(ngModel)]="item.style_2.fillColor">
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="width: 120px;">
+                                <div class="editable-cell">
+                                    <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
+                                        {{item.style?.fillOpacity}}
+                                    </div>
+                                    <div class="editable-cell-input-wrapper" *ngIf="item.edit">
+                                        <input type="text" nz-input [(ngModel)]="item.style_2.fillOpacity">
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="width: 120px;">
+                                <div class="editable-cell">
+                                    <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
+                                        {{item.style?.weight}}
+                                    </div>
+                                    <div class="editable-cell-input-wrapper" *ngIf="item.edit">
+                                        <input type="text" nz-input [(ngModel)]="item.style_2.weight">
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="width: 120px;">
+                                <div class="editable-cell">
+                                    <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
+                                        {{item.style?.color}}
+                                    </div>
+                                    <div class="editable-cell-input-wrapper" *ngIf="item.edit">
+                                        <input type="color" nz-input [(ngModel)]="item.style_2.color">
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="width: 120px;">
+                                <div class="editable-cell">
+                                    <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
+                                        {{item.style?.opacity}}
+                                    </div>
+                                    <div class="editable-cell-input-wrapper" *ngIf="item.edit">
+                                        <input type="text" nz-input [(ngModel)]="item.style_2.opacity">
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="table-action">
+                                    <ng-container *ngIf="!item.edit">
+                                        <button class="btn btn-primary" (click)="startSymbolEdit(item)">Edit</button>
+                                    </ng-container>
+                                    <ng-container *ngIf="item.edit">
+                                        <button class="btn btn-primary" (click)="saveSymbolEdit(item)">Save</button>
+                                        <button class="btn btn-primary" (click)="cancelSymbolEdit(item)">Cancel</button>
+                                    </ng-container>
+                                    <button class="btn btn-primary" (click)="deleteSymbol(item)">Delete</button>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </nz-table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

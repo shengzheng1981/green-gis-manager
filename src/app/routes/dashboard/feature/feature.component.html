@@ -2,6 +2,7 @@
     <div class="module-header">
         <h5 class="module-header-title"><i class="fas fa-table"></i>Feature(Class)</h5>
         <div class="module-header-action">
+            <nz-alert nzType="info" nzMessage="One SHP at a time" nzShowIcon></nz-alert>
             <label class="btn btn-success">
                 <input type="file" name="file" style="display: none;" (change)="publish($event)" multiple/>
                 Publish(SHP)
@@ -9,44 +10,133 @@
         </div>
     </div>
     <div class="module-body">
-        <div class="panel">
+        <div class="panel panel-grid">
             <div class="panel-heading">
                 <span class="panel-title">FeatureClass List</span>
             </div>
             <div class="panel-body">
                 <div class="list">
-                    <div class="list-header list-grid1">
-                        <span>
-                            Name
-                        </span>
-                        <span style="justify-self: center">
-                            Geometry Type
-                        </span>
-                        <span style="justify-self: center">
-                            Tile
-                        </span>
-                        <span style="justify-self: center">
-                            Cache
-                        </span>
-                        <span style="justify-self: center">
-                            Action
-                        </span>
-                    </div>
                     <div class="list-body">
 
-                        <div *ngFor="let feature of features" class="list-grid-item list-grid1">
-                            <span>{{feature.name}}</span>
-                            <span style="justify-self: center">{{feature.geomType}}</span>
-                            <span style="justify-self: center">{{feature.tile || false}}</span>
-                            <span style="justify-self: center">{{feature.cache || false}}</span>
-                            <div style="justify-self: center">
+                        <div *ngFor="let item of features" class="list-grid-item list-grid1" [ngClass]="{'active': feature && item._id == feature._id}" (click)="active(item)">
+                            <span class="area-a">{{item.name}}</span>
+                            <div class="area-b"><label class="label label-primary">{{item.geomType == 1 ? 'point' : (item.geomType == 2 ? 'polyline': (item.geomType == 3 ? 'polygon' : 'other'))}}</label></div>
+                            <span class="area-c"><i class="fas fa-th-large" [ngClass]="{'text-success': item.tile, 'text-gray': !item.tile}" tooltip="{{ 'spatial index:' + (item.tile || false)}}"></i></span>
+                            <span class="area-d"><i class="fas fa-inbox" [ngClass]="{'text-success': item.cache, 'text-gray': !item.cache}" tooltip="{{ 'cache in memory:' + (item.cache || false)}}"></i></span>
+                            <span class="area-e"><i class="fas fa-image" [ngClass]="{'text-success': item.image, 'text-gray': !item.image}" tooltip="{{ 'static images:' + (item.image || false)}}"></i></span>
+                            <!--<div style="justify-self: center">
                                 <button class="btn btn-danger btn-xs" (click)="delete(feature)">Delete</button>
-                            </div>
+                            </div>-->
                         </div>
 
                     </div>
 
                 </div>
+                <div class="panel-empty" *ngIf="!features || features.length == 0">Publish</div>
+            </div>
+        </div>
+        <div class="panel panel-grid">
+            <div class="panel-heading">
+                <span class="panel-title">FeatureClass Detail{{feature? (' - ' + feature.name) : ''}}</span>
+            </div>
+            <div class="panel-body">
+                <nz-tabset *ngIf="feature">
+                    <nz-tab nzTitle="General">
+                        <div class="info-form">
+                            <div class="info-item">
+                                <div class="info-label">name</div>
+                                <div class="info-value">{{feature.name}}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">geometry type</div>
+                                <div class="info-value"><label class="label label-primary">{{feature.geomType == 1 ? 'point' : (feature.geomType == 2 ? 'polyline': (feature.geomType == 3 ? 'polygon' : 'other'))}}</label></div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">enable spatial index</div>
+                                <div class="info-value"><label class="label" [ngClass]="{'label-danger': !feature.tile, 'label-success': feature.tile}">{{feature.tile || false}}</label></div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">enable cache in memory</div>
+                                <div class="info-value"><label class="label" [ngClass]="{'label-danger': !feature.cache, 'label-success': feature.cache}">{{feature.cache || false}}</label></div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">enable static image</div>
+                                <div class="info-value"><label class="label" [ngClass]="{'label-danger': !feature.image, 'label-success': feature.image}">{{feature.image || false}}</label></div>
+                            </div>
+                        </div>
+                    </nz-tab>
+                    <nz-tab nzTitle="Field">
+                        <div class="table-container">
+                            <div class="table-toolbar">
+                                <button class="btn btn-primary" [disabled]="true">Add</button>
+                            </div>
+                            <nz-table #fieldTable [nzFrontPagination]="false" [nzData]="feature.properties" [nzShowPagination]="false" [nzScroll]="{'y': '500px'}">
+                                <thead>
+                                <tr>
+                                    <!--<th nzShowCheckbox [(nzChecked)]="option.field.all_checked" [nzIndeterminate]="option.field.indeterminate" (nzCheckedChange)="checkAllFields($event)"></th>-->
+                                    <th style="width: 200px;">Name</th>
+                                    <th style="width: 240px;">Alias</th>
+                                    <th style="width: 120px;">Type</th>
+                                    <th style="text-align: center">Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr *ngFor="let item of fieldTable.data">
+                                    <!--<td nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="refreshFieldStatus()"></td>-->
+                                    <td style="width: 200px;">{{item.name}}</td>
+                                    <td style="width: 240px;">
+                                        <div class="editable-cell">
+                                            <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
+                                                {{item.alias}}
+                                                <i nz-icon type="edit" class="editable-cell-icon" (click)="startFieldEdit(item)"></i>
+                                            </div>
+                                            <div class="editable-cell-input-wrapper" *ngIf="item.edit">
+                                                <input type="text" nz-input [(ngModel)]="item.alias_2">
+                                                <i nz-icon type="close" class="editable-cell-icon" (click)="cancelFieldEdit(item)"></i>
+                                                <i nz-icon type="check" class="editable-cell-icon" (click)="saveFieldEdit(item)"></i>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td style="width: 120px;">{{item.type}}</td>
+                                    <td>
+                                        <div class="table-action">
+                                            <button class="btn btn-primary" (click)="deleteField(item)">Delete</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </nz-table>
+                        </div>
+                    </nz-tab>
+                    <nz-tab nzTitle="Symbol">
+                        <div class="symbol-container">
+                            <div class="symbol-type">
+                                <nz-radio-group [(ngModel)]="feature.renderer.renderType">
+                                    <label nz-radio [nzValue]="0" >Simple Renderer</label>
+                                    <label nz-radio [nzValue]="1" >Category Renderer</label>
+                                    <label nz-radio [nzValue]="2" >Class Renderer</label>
+                                </nz-radio-group>
+                            </div>
+                            <div class="symbol-detail" [ngSwitch]="feature.renderer.renderType">
+                                <div class="simple-renderer" *ngSwitchCase="0">
+                                    <div class="input-group">
+                                        <nz-select style="width: 240px;" [(ngModel)]="feature.renderer.simple.symbol" nzAllowClear nzPlaceHolder="Choose Symbol" [compareWith]="compareObject">
+                                            <nz-option [nzValue]="symbol" [nzLabel]="symbol.name" *ngFor="let symbol of option.symbols"></nz-option>
+                                        </nz-select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </nz-tab>
+                    <nz-tab nzTitle="Label">
+                        Content of Tab Pane 3
+                    </nz-tab>
+                </nz-tabset>
+                <div class="panel-empty" *ngIf="!feature">Publish and Select FeatureClass</div>
+            </div>
+            <div class="panel-footer">
+                <button class="btn btn-danger" (click)="delete()" [disabled]="!feature">Delete</button>
+                <button class="btn btn-success" (click)="update()" [disabled]="!feature">Update</button>
             </div>
         </div>
     </div>

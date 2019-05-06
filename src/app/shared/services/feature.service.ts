@@ -26,4 +26,8 @@ export class FeatureService {
         return this.http.get(this.url + '/' + name + '/remove');
     }
 
+    update(feature: any): Observable<any> {
+        return this.http.post(this.url + '/' + feature.name + '/update', {feature:  feature});
+    }
+
 }

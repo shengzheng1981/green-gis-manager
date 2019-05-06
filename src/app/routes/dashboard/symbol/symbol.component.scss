@@ -1,0 +1,52 @@
+.module-body {
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: 300px 1fr;
+}
+
+.table-container {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  .table-toolbar {
+    display: grid;
+    grid-gap: 10px;
+    /* autoprefixer: off */
+    grid-auto-flow: column;
+    grid-auto-columns: min-content;
+  }
+  .table-action{
+    display: grid;
+    grid-gap: 10px;
+    /* autoprefixer: off */
+    grid-auto-flow: column;
+    grid-auto-columns: min-content;
+    justify-content: center;
+  }
+}
+
+
+.editable-cell {
+  position: relative;
+}
+
+.editable-cell-input-wrapper{
+  display: grid;
+  grid-gap: 5px;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+}
+
+.editable-cell-text-wrapper {
+  display: grid;
+  grid-gap: 5px;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+}
+
+.editable-cell-icon {
+  cursor: pointer;
+}
+
+.editable-cell-icon:hover {
+  color: #108ee9;
+}

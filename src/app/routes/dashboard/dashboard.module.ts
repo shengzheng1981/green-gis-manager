@@ -18,6 +18,7 @@ import { FeatureComponent } from './feature/feature.component';
 import { GeojsonComponent } from './geojson/geojson.component';
 import { BackendComponent } from './backend/backend.component';
 import { FrontendComponent } from './frontend/frontend.component';
+import { SymbolComponent } from './symbol/symbol.component';
 
 
 const routes: Routes = [
@@ -28,6 +29,10 @@ const routes: Routes = [
             {
                 path: 'feature',
                 component: FeatureComponent
+            },
+            {
+                path: 'symbol',
+                component: SymbolComponent
             },
             {
                 path: 'geojson',
@@ -64,7 +69,7 @@ const routes: Routes = [
         ProgressbarModule.forRoot(),
         CollapseModule.forRoot()
     ],
-    declarations: [DashboardComponent, FeatureComponent, GeojsonComponent, BackendComponent, FrontendComponent]
+    declarations: [DashboardComponent, FeatureComponent, GeojsonComponent, BackendComponent, FrontendComponent, SymbolComponent]
 })
 export class DashboardModule {
 }

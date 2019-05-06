@@ -1,5 +1,5 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {Map, TileLayer, CircleMarker, GeoJSON, Canvas} from 'leaflet';
+import {Map, TileLayer, Marker, Icon, CircleMarker, GeoJSON, Canvas} from 'leaflet';
 import {HttpClient} from '@angular/common/http';
 import {FeatureService} from '../../../shared/services/feature.service';
 
@@ -54,6 +54,13 @@ export class GeojsonComponent implements OnInit {
                                     opacity: 1,
                                     fillOpacity: 0.5
                                 });
+                                /*return new Marker(latlng, {
+                                    icon: new Icon({
+                                        iconUrl: 'assets/img/map/sewage.svg',
+                                        iconSize: [16, 16],
+                                        iconAnchor: [0, 0]
+                                    })
+                                });*/
                             },
                             onEachFeature:   (feature, layer) => {
                                 layer.on({
