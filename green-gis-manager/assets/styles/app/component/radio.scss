@@ -1,0 +1,22 @@
+.ngg-radio{
+  cursor: pointer;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 1px solid #aaa;
+  position: relative;
+  border-radius: 50%;
+  vertical-align: middle;
+  box-sizing: border-box;
+  transition: border-color ease .2s;
+}
+
+.ngg-radio .checked{
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: $color-primary;
+}

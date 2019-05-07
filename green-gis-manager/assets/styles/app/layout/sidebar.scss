@@ -1,0 +1,175 @@
+//一级导航侧栏：上中下布局（Logo/导航栏/Exit）
+.sidebar{
+  position:relative;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  background: $color-primary;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+/* sidebar-header  */
+.sidebar .sidebar-header {
+  height: 86px;
+  text-align: center;
+}
+
+.sidebar .sidebar-header .team-logo {
+  margin: 18px 0;
+  display: block;
+}
+
+.sidebar .sidebar-header .team-logo img:hover {
+  -webkit-filter: brightness(0.5);
+  filter: brightness(0.5);
+}
+
+.sidebar .sidebar-header .team-logo img {
+  width: 50px;
+  height: 50px;
+  border: 0;
+  vertical-align: middle;
+  border-radius: 2px;
+}
+/* sidebar-body  */
+.sidebar .sidebar-body {
+  position:relative;
+  overflow-y: auto;
+  text-align: center;
+}
+
+.sidebar .sidebar-body .nav-apps {
+  position:absolute;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.sidebar .sidebar-body .nav-apps li {
+  cursor: pointer;
+  position: relative
+}
+
+.sidebar .sidebar-body .nav-apps li.active a.app-item {
+  background: $color-primary-active;
+}
+
+.sidebar .sidebar-body .nav-apps li.active a.app-item:before {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 30px;
+  width: 0;
+  height: 0;
+  border-top: 6px solid transparent;
+  border-right: 5px solid #fdfdfd;
+  border-bottom: 6px solid transparent
+}
+
+.sidebar .sidebar-body .nav-apps li.active a.app-item .item-icon {
+  opacity: 1;
+  -webkit-transform: translateY(0);
+  transform: translateY(0)
+}
+
+.sidebar .sidebar-body .nav-apps li.active a.app-item .item-icon .icon-default {
+  display: none
+}
+
+.sidebar .sidebar-body .nav-apps li.active a.app-item .item-icon .icon-hover {
+  display: inherit
+}
+
+.sidebar .sidebar-body .nav-apps li:hover a.app-item {
+  box-shadow: 0 0 2px 2px $color-primary-hover;
+}
+
+.sidebar .sidebar-body .nav-apps li:hover a.app-item .item-icon {
+  opacity: 1;
+  -webkit-transform: translateY(-10px);
+  transform: translateY(-10px)
+}
+
+.sidebar .sidebar-body .nav-apps li:hover a.app-item .item-icon .icon-default {
+  display: none;
+}
+
+.sidebar .sidebar-body .nav-apps li:hover a.app-item .item-icon .icon-hover {
+  display: inherit;
+}
+
+.sidebar .sidebar-body .nav-apps li:hover a.app-item .name {
+  height: auto;
+  -webkit-transform: translateY(-10px);
+  transform: translateY(-10px)
+}
+
+.sidebar .sidebar-body .nav-apps li:hover a.app-item .badge {
+  -webkit-transform: translateY(-10px);
+  transform: translateY(-10px)
+}
+
+.sidebar .sidebar-body .nav-apps li a.app-item {
+  display: block;
+  text-decoration: none;
+  height: 70px;
+  transition: box-shadow .3s
+}
+
+.sidebar .sidebar-body .nav-apps li a.app-item .item-icon {
+  margin-top: 15px;
+  display: inline-block;
+  color: #fff;
+  font-size: 24px;
+  opacity: .8;
+  transition: opacity .5s,-webkit-transform .5s;
+  transition: transform .5s,opacity .5s;
+  transition: transform .5s,opacity .5s,-webkit-transform .5s
+}
+
+.sidebar .sidebar-body .nav-apps li a.app-item .item-icon i {
+  font-size: 24px
+}
+
+.sidebar .sidebar-body .nav-apps li a.app-item .item-icon .icon-hover {
+  display: none
+}
+
+.sidebar .sidebar-body .nav-apps li a.app-item .name {
+  display: block;
+  height: auto;  /* 0 */
+  overflow: hidden;
+  font-size: 12px;
+  color: #fff;
+  -webkit-transform: translateY(0);
+  transform: translateY(0);
+  transition: height .5s,-webkit-transform .5s;
+  transition: height .5s,transform .5s;
+  transition: height .5s,transform .5s,-webkit-transform .5s;
+}
+
+.sidebar .sidebar-body .nav-apps li a.app-item.pbox-open,.sidebar .sidebar-body .nav-apps li a.app-item:hover {
+  background: $color-primary-active-hover;
+  text-decoration: none;
+}
+
+.sidebar .sidebar-body .nav-apps li a.app-item .badge {
+  position: absolute;
+  top: 18px;
+  right: 14px;
+  transition: -webkit-transform .5s;
+  transition: transform .5s;
+  transition: transform .5s,-webkit-transform .5s;
+}
+
+
+
+/* sidebar-footer  */
+.sidebar .sidebar-footer {
+  height: 86px;
+  text-align: center;
+}

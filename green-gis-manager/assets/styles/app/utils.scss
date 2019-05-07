@@ -1,0 +1,44 @@
+html,body{
+    overflow:hidden!important;
+    height: 100%;
+}
+a{
+    text-decoration: none;
+}
+a:active, a:hover {
+    outline: 0;
+    text-decoration: none;
+}
+ul {
+    margin: 0;
+    padding: 0;
+}
+li {
+    list-style-type: none;
+}
+.btn:focus, .btn.focus, .btn:active:focus, .btn:active.focus, .btn.active:focus, .btn.active.focus {
+    outline: none;
+}
+
+
+/* caret start */
+.caret-down {
+    transition: all .2s cubic-bezier(.4,.1,.5,1) .1s
+}
+.rotate-caret {
+    -webkit-transform: rotate(45deg);
+    transform: rotate(45deg)
+}
+/* caret end */
+
+
+
+/* amap end */
+.amap-logo{
+    display: none !important;
+}
+
+.amap-copyright{
+    display: none !important;
+}
+/* amap end */

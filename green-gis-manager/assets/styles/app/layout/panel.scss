@@ -1,0 +1,48 @@
+//panel布局：上中下（header/body/footer）
+.panel-grid {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    overflow: hidden;
+}
+
+.panel-grid .panel-body{
+    overflow: auto;
+}
+
+.panel{
+    margin-bottom:0px;
+    background: #fdfdfd;
+}
+.panel .panel-heading{
+    display: flex;
+    align-items: center;
+    .panel-title{
+        flex : 1 0 0;
+        padding-left: 10px;
+        color: #333;
+        font-size: 14px;
+        border-left: solid 3px $color-primary;
+    }
+
+    .panel-close{
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+    .panel-close:hover{
+        opacity: 0.5;
+        cursor: pointer;
+    }
+}
+
+
+.panel .panel-footer{
+    text-align: right;
+}
+.panel .panel-body:before {
+    display: none !important;
+}
+.panel .panel-body:after {
+    display: none !important;
+}
+

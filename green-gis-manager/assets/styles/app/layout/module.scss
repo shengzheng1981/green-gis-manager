@@ -1,0 +1,64 @@
+/* start  module */
+
+//二级或三级菜单内容：上中下布局（标题/内容/操作）
+.module-content{
+    position: relative;
+    height:100%;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    background: #eee;
+}
+
+//头部：左右布局（标题/四级菜单栏）
+.module-content .module-header {
+    height: 50px;
+    margin: 0;
+    padding: 0px 15px;
+    position: relative;
+    background: #fdfdfd;
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: auto 1fr ;
+    align-items: center;
+}
+.module-content .module-body{
+    position: relative;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    padding:0 10px;
+    margin: 10px 0;
+    background: #eee;
+}
+.module-content .module-footer {
+    height: 50px;
+    background: #fdfdfd;
+    padding: 0px 20px;
+    display: grid;
+    grid-gap: 10px;
+    /* autoprefixer: off */
+    grid-auto-flow: column;
+    grid-template-columns: min-content;
+    align-items: center;
+    justify-content: right;
+}
+
+.module-content .module-header .module-header-title {
+    font-size: 16px;
+    color: #333;
+}
+.module-content .module-header .module-header-title i {
+    margin-right: 10px;
+    font-size: 20px;
+}
+.module-content .module-header .module-header-desc {
+    font-size: 12px;
+    color: #333;
+}
+.module-content .module-header .module-header-tabs{
+    align-self: flex-end;
+}
+.module-content .module-header .module-header-action{
+    justify-self: right;
+}
+
+/* end  module */

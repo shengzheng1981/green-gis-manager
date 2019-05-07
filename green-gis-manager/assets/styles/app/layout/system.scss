@@ -1,0 +1,112 @@
+html, body {
+    width: 100% !important;
+    height: 100% !important;
+}
+//一级菜单，整个Layout
+.system-content{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    background: #ffffff;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+//左右布局：Left：对象列表或二级菜单列表
+//左侧布局-上中下布局（标题/列表/操作）（下footer可选）
+.system-content .system-left{
+    position: relative;
+    width: 300px;
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    background: rgba(253,253,253,.95);
+    border-right: 1px solid #ddd;
+    transition: width .2s ease-in-out;
+}
+.system-content .system-left-lg{
+    width: 400px;
+}
+
+//左右布局：Body：二级菜单内容-参见module.css
+.system-content .system-body{
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+
+//左侧布局-头部：左右布局（标题/添加按钮）
+.system-content .system-left .system-left-header{
+    height: 50px;
+    padding: 0px 20px;
+    border-bottom: 1px solid #eee;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+}
+.system-content .system-left .system-left-header .title{
+    color: #333;
+    font-size: 16px;
+}
+.system-content .system-left .system-left-header .action{
+
+}
+//左侧布局-中间：上中下布局（搜索栏/分组栏/路由表/统计栏）
+.system-content .system-left .system-left-body{
+    position: relative;
+    overflow: hidden;
+    font-size: 14px;
+    display : grid;
+    grid-template-rows: auto auto 1fr auto;
+    grid-template-areas: "search-area"
+                            "group-area"
+                            "router-area"
+                            "stat-area";
+}
+//搜索栏：参见search.css
+.system-content .system-left .system-left-body .search-area{
+    grid-area: search-area;
+    position: relative;
+}
+.system-content .system-left .system-left-body .group-area{
+    grid-area: group-area;
+    overflow-y : auto;
+}
+//路由表：参见router.css
+.system-content .system-left .system-left-body .router-area{
+    grid-area: router-area;
+    overflow-y : auto;
+}
+.system-content .system-left .system-left-body .stat-area{
+    grid-area: stat-area;
+    height: 42px;
+    padding: 0px 20px;
+    border-top: 1px solid #eee;
+    display : grid;
+    grid-template-rows: 1fr;
+    text-align: right;
+    align-items: center;
+    font-weight: bold;
+}
+
+.system-content .system-left .system-left-footer{
+    height: 50px;
+    padding: 0px 20px;
+    border-top: 1px solid #eee;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas: "reserve-area action-area";
+    align-items: center;
+}
+.system-content .system-left .system-left-footer .action-area {
+    grid-area: action-area;
+}
+.system-content .system-left .system-left-footer .reserve-area {
+    grid-area: reserve-area;
+}

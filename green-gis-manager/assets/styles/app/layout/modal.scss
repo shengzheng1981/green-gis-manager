@@ -1,0 +1,24 @@
+//overwrite
+.modal-dialog{
+  margin: 50px auto;
+}
+.modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.35);
+}
+
+.modal-header{
+  height: 51px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  .modal-header-left {
+    flex : 1 1 0;
+    font-size: 16px;
+  }
+  .modal-header-right {
+
+  }
+}
+
+
+
