@@ -5,7 +5,7 @@ import {HttpClient} from "@angular/common/http";
 export class ConfigService {
 
     public config : any;
-    public upload_url : string;
+    //public upload_url : string;
 
     constructor(private http: HttpClient) {
     }
@@ -15,7 +15,7 @@ export class ConfigService {
             this.http.get((url || "assets/json/config.json") + '?v=' + (new Date()).getTime())
                 .subscribe((data :any) => {
                     this.config = data;
-                    this.upload_url = this.config.api.web_api + '/upload';
+                    //this.upload_url = this.config.api.web_api + '/upload/shape';
                     resolve();
                 });
         });

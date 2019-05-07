@@ -136,7 +136,9 @@
             </div>
             <div class="panel-footer">
                 <button class="btn btn-danger" (click)="delete()" [disabled]="!feature">Delete</button>
-                <button class="btn btn-success" (click)="update()" [disabled]="!feature">Update</button>
+                <div class="panel-footer-action">
+                    <button class="btn btn-success" (click)="update()" [disabled]="!feature">Update</button>
+                </div>
             </div>
         </div>
     </div>

@@ -1,6 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {SymbolService} from '../../../shared/services/symbol.service';
 import {default as swal} from "sweetalert2";
+import {HttpClient} from '@angular/common/http';
+import {ConfigService} from '../../../shared/services/config.service';
 
 @Component({
     selector: 'app-symbol',
@@ -35,7 +37,7 @@ export class SymbolComponent implements OnInit {
     ];
     symbols :any = [];
 
-    constructor(private symbolService: SymbolService) {
+    constructor(private symbolService: SymbolService, private http: HttpClient, private configService: ConfigService) {
     }
 
     ngOnInit() {
@@ -110,18 +112,34 @@ export class SymbolComponent implements OnInit {
     }
 
     deleteSymbol(symbol) {
-        this.symbolService.delete(symbol._id).subscribe( res => {
-            const index = this.symbols.findIndex( item => item._id === symbol._id );
-            this.symbols.splice(index, 1);
+        swal({
+            title: 'warning',
+            text: "confirm delete symbol?",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Confirm',
+            cancelButtonText: 'Cancel'
+        }).then(result => {
+            if (result.value) {
+                this.symbolService.delete(symbol._id).subscribe( res => {
+                    const index = this.symbols.findIndex( item => item._id === symbol._id );
+                    this.symbols.splice(index, 1);
+                });
+            }
         });
     }
 
     upload(fileInput: any, symbol: any){
         const formData: any = new FormData();
         const files: Array<File> = <Array<File>>fileInput.target.files;
-        let name = "";
-        for(let i = 0; i < files.length; i++){
-
-        }
+        if (files.length == 0) return;
+        formData.append("file", files[0], files[0]['name']);
+        let name = files[0]['name'];
+        this.http.post(this.configService.config.api.web_api + "/upload/image", formData)
+            .subscribe(res => {
+                symbol.style_2.marker = name;
+            });
     }
 }

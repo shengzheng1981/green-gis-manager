@@ -21,12 +21,12 @@ export class FrontendComponent implements OnInit {
             initialize: function(options) {
                 L.setOptions(this, options);
                 L.GridLayer.prototype.initialize.apply(this, arguments);
-                if(!options.name){
-                    throw new Error('need feature class name!')
+                if(!options.meta){
+                    throw new Error('need feature class!')
                 }
             },
             createTile: function(coords, done){
-                if(this.options.name){
+                if(this.options.meta){
                     // create a <canvas> element for drawing
                     var tile = L.DomUtil.create('canvas', 'leaflet-tile');
                     // setup tile width and height according to the options
@@ -35,97 +35,12 @@ export class FrontendComponent implements OnInit {
                     tile.height = size.y;
                     // draw something asynchronously and pass the tile to the done() callback
                     $.ajax({
-                        url : this.options.url + '/tiles/vector/' + this.options.name + '/' + coords.x + '/' + coords.y + '/' + coords.z,
+                        url : this.options.url + '/tiles/vector/' + this.options.meta.name + '/' + coords.x + '/' + coords.y + '/' + coords.z,
                         dataType : 'json',
                         success:  (features) => {
                             if (Array.isArray(features)){
                                 const ctx = tile.getContext('2d');
-                                ctx.strokeStyle = 'red';
-                                ctx.fillStyle = 'rgba(255,0,0,0.5)';
-                                features.forEach(feature => {
-                                    if (feature.geometry.type === 'Point') {
-                                        let lng = feature.geometry.coordinates[0], lat = feature.geometry.coordinates[1];
-                                        let tileXY = this.lngLat2Tile(lng, lat, coords.z);
-                                        let pixelXY = this.lngLat2Pixel(lng, lat, coords.z);
-                                        let pixelX = pixelXY.pixelX + (tileXY.tileX - coords.x) * 256;
-                                        let pixelY = pixelXY.pixelY + (tileXY.tileY - coords.y) * 256;
-                                        ctx.beginPath(); //Start path
-                                        ctx.arc(pixelX, pixelY, 6, 0, Math.PI * 2, true); // Draw a point using the arc function of the canvas with a point structure.
-                                        ctx.fill();
-                                    } else if (feature.geometry.type === 'LineString') {
-                                        ctx.beginPath();
-                                        feature.geometry.coordinates.forEach( (point,index) => {
-                                            let lng = point[0], lat = point[1];
-                                            let tileXY = this.lngLat2Tile(lng, lat, coords.z);
-                                            let pixelXY = this.lngLat2Pixel(lng, lat, coords.z);
-                                            let pixelX = pixelXY.pixelX + (tileXY.tileX - coords.x) * 256;
-                                            let pixelY = pixelXY.pixelY + (tileXY.tileY - coords.y) * 256;
-                                            if (index === 0){
-                                                ctx.moveTo(pixelX, pixelY);
-                                            } else {
-                                                ctx.lineTo(pixelX, pixelY);
-                                            }
-                                        });
-                                        ctx.stroke();
-                                    } else if (feature.geometry.type === 'Polygon') {
-                                        ctx.beginPath();
-                                        feature.geometry.coordinates.forEach( ring => {
-                                            ring.forEach( (point, index) => {
-                                                let lng = point[0], lat = point[1];
-                                                let tileXY = this.lngLat2Tile(lng, lat, coords.z);
-                                                let pixelXY = this.lngLat2Pixel(lng, lat, coords.z);
-                                                let pixelX = pixelXY.pixelX + (tileXY.tileX - coords.x) * 256;
-                                                let pixelY = pixelXY.pixelY + (tileXY.tileY - coords.y) * 256;
-                                                if (index === 0){
-                                                    ctx.moveTo(pixelX, pixelY);
-                                                } else {
-                                                    ctx.lineTo(pixelX, pixelY);
-                                                }
-                                            });
-                                            ctx.closePath();
-                                        });
-                                        ctx.fill();
-                                        ctx.stroke();
-                                    } else if (feature.geometry.type === 'MultiLineString') {
-                                        ctx.beginPath();
-                                        feature.geometry.coordinates.forEach( line => {
-                                            line.forEach( (point,index) => {
-                                                let lng = point[0], lat = point[1];
-                                                let tileXY = this.lngLat2Tile(lng, lat, coords.z);
-                                                let pixelXY = this.lngLat2Pixel(lng, lat, coords.z);
-                                                let pixelX = pixelXY.pixelX + (tileXY.tileX - coords.x) * 256;
-                                                let pixelY = pixelXY.pixelY + (tileXY.tileY - coords.y) * 256;
-                                                if (index === 0){
-                                                    ctx.moveTo(pixelX, pixelY);
-                                                } else {
-                                                    ctx.lineTo(pixelX, pixelY);
-                                                }
-                                            });
-                                        });
-                                        ctx.stroke();
-                                    } else if (feature.geometry.type === 'MultiPolygon') {
-                                        feature.geometry.coordinates.forEach( polygon => {
-                                            ctx.beginPath();
-                                            polygon.forEach( ring => {
-                                                ring.forEach( (point, index) => {
-                                                    let lng = point[0], lat = point[1];
-                                                    let tileXY = this.lngLat2Tile(lng, lat, coords.z);
-                                                    let pixelXY = this.lngLat2Pixel(lng, lat, coords.z);
-                                                    let pixelX = pixelXY.pixelX + (tileXY.tileX - coords.x) * 256;
-                                                    let pixelY = pixelXY.pixelY + (tileXY.tileY - coords.y) * 256;
-                                                    if (index === 0){
-                                                        ctx.moveTo(pixelX, pixelY);
-                                                    } else {
-                                                        ctx.lineTo(pixelX, pixelY);
-                                                    }
-                                                });
-                                                ctx.closePath();
-                                            });
-                                            ctx.fill();
-                                            ctx.stroke();
-                                        });
-                                    }
-                                });
+                                this.draw(ctx, this.options.meta, coords.x, coords.y, coords.z, features);
                             }
                             done(null, tile);
                         }
@@ -136,6 +51,202 @@ export class FrontendComponent implements OnInit {
                     return null;
                 }
 
+            },
+            draw: async function(ctx, meta, x, y, z, features){
+
+                const getRGBA = ( color, opacity ) => {
+                    color = color || '#ff0000';
+                    opacity = opacity != undefined ? opacity : 1.0;
+                    //十六进制颜色值的正则表达式
+                    const reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/;
+                    // 如果是16进制颜色
+                    if (color && reg.test(color)) {
+                        if (color.length === 4) {
+                            let sColorNew = "#";
+                            for (let i=1; i<4; i+=1) {
+                                sColorNew += color.slice(i, i+1).concat(color.slice(i, i+1));
+                            }
+                            color = sColorNew;
+                        }
+                        //处理六位的颜色值
+                        const sColorChange = [];
+                        for (let i=1; i<7; i+=2) {
+                            sColorChange.push(parseInt("0x"+color.slice(i, i+2)));
+                        }
+                        return "rgba(" + sColorChange.join(",") + "," + opacity + ")";
+                    }
+                    return color;
+                };
+
+                const getDefaultSymbol = () => {
+                    if (meta.geomType === 0){
+                        return {
+                            type : 10,
+                            style : {
+                                radius: 6,
+                                fillColor: '#ff0000',
+                                fillOpacity: 1,
+                                color: '#ff0000',
+                                opacity: 1,
+                                weight: 2
+                            }
+                        }
+                    } else if (meta.geomType === 1){
+                        return {
+                            type : 10,
+                            style : {
+                                color: '#ff0000',
+                                opacity: 1,
+                                weight: 2
+                            }
+                        }
+                    } else if (meta.geomType === 2){
+                        return {
+                            type : 10,
+                            style : {
+                                fillColor: '#ff0000',
+                                fillOpacity: 1,
+                                color: '#ff0000',
+                                opacity: 1,
+                                weight: 2
+                            }
+                        }
+                    }
+                };
+
+                const getSymbol = (feature) => {
+                    const defaultSymbol = getDefaultSymbol();
+                    if (meta.renderer.renderType === 0) {
+                        return meta.renderer.simple ? meta.renderer.simple.symbol : defaultSymbol;
+                    } else if (meta.renderer.renderType === 1) {
+                        if (meta.renderer.category && meta.renderer.category.field && Array.isArray(meta.renderer.category.categories)) {
+                            const category = meta.renderer.category.categories.find( item => item.value == feature.properties[meta.renderer.category.field]);
+                            return category ? category.symbol : defaultSymbol;
+                        } else {
+                            return defaultSymbol;
+                        }
+                    } else if (meta.renderer.renderType === 2) {
+                        if (meta.renderer.class && meta.renderer.class.field && Array.isArray(meta.renderer.class.breaks)) {
+                            const category = meta.renderer.class.breaks.find( item => item.min <= feature.properties[meta.renderer.class.field] && item.max >= feature.properties[meta.renderer.class.field]);
+                            return category ? category.symbol : defaultSymbol;
+                        } else {
+                            return defaultSymbol;
+                        }
+                    } else  {
+                        return defaultSymbol;
+                    }
+                };
+
+                const getImage = (path) => {
+                    return new Promise(  (resolve, reject) => {
+                        // Create a new image from JavaScript
+                        let image = new Image();
+                        // Handler onload -> `resolve`
+                        image.onload  = () => resolve(image);
+                        // If the image fails to be downloaded -> `reject`
+                        image.onerror = reject;
+                        // Apply the path as `src` to the image -> browser fetches it
+                        image.src = path;
+                    });
+                };
+
+                //no renderer
+                if(!meta.renderer) return;
+
+                //default
+                ctx.strokeStyle = 'rgba(255,0,0,1)';
+                ctx.fillStyle = 'rgba(255,0,0,1)';
+                ctx.lineWidth = 2;
+
+                features.forEach( async (feature) => {
+                    const symbol = getSymbol(feature);
+
+                    if (feature.geometry.type === 'Point') {
+                        let lng = feature.geometry.coordinates[0], lat = feature.geometry.coordinates[1];
+                        let tileXY = this.lngLat2Tile(lng, lat, z);
+                        let pixelXY = this.lngLat2Pixel(lng, lat, z);
+                        let pixelX = pixelXY.pixelX + (tileXY.tileX - x) * 256;
+                        let pixelY = pixelXY.pixelY + (tileXY.tileY - y) * 256;
+
+                        if (symbol.type === 11) {
+                            if (symbol.style.image) {
+                                ctx.drawImage(symbol.style.image, pixelX, pixelY, symbol.style.width, symbol.style.height);
+                            } else {
+                                symbol.style.image = await getImage(this.options.url + "/images/" +  (symbol.style.marker || 'marker.png'));
+                                ctx.drawImage(symbol.style.image, pixelX, pixelY, symbol.style.width, symbol.style.height);
+                            }
+                        } else  {
+                            ctx.strokeStyle = getRGBA(symbol.style.color, symbol.style.opacity);
+                            ctx.fillStyle = getRGBA(symbol.style.fillColor, symbol.style.fillOpacity);
+                            ctx.beginPath(); //Start path
+                            ctx.arc(pixelX, pixelY, symbol.style.radius, 0, Math.PI * 2, true); // Draw a point using the arc function of the canvas with a point structure.
+                            ctx.fill();
+                            ctx.stroke();
+                        }
+
+                    } else if (feature.geometry.type === 'LineString') {
+                        ctx.strokeStyle = getRGBA(symbol.style.color, symbol.style.opacity);
+                        ctx.lineWidth = symbol.style.weight ? (symbol.style.weight || 2) : 2;
+                        ctx.beginPath();
+                        feature.geometry.coordinates.forEach( (point,index) => {
+                            let lng = point[0], lat = point[1];
+                            let tileXY = this.lngLat2Tile(lng, lat, z);
+                            let pixelXY = this.lngLat2Pixel(lng, lat, z);
+                            let pixelX = pixelXY.pixelX + (tileXY.tileX - x) * 256;
+                            let pixelY = pixelXY.pixelY + (tileXY.tileY - y) * 256;
+                            if (index === 0){
+                                ctx.moveTo(pixelX, pixelY);
+                            } else {
+                                ctx.lineTo(pixelX, pixelY);
+                            }
+                        });
+                        ctx.stroke();
+                    } else if (feature.geometry.type === 'Polygon') {
+                        ctx.strokeStyle = getRGBA(symbol.style.color, symbol.style.opacity);
+                        ctx.fillStyle = getRGBA(symbol.style.fillColor, symbol.style.fillOpacity);
+                        ctx.beginPath();
+                        feature.geometry.coordinates.forEach( ring => {
+                            ring.forEach( (point, index) => {
+                                let lng = point[0], lat = point[1];
+                                let tileXY = this.lngLat2Tile(lng, lat, z);
+                                let pixelXY = this.lngLat2Pixel(lng, lat, z);
+                                let pixelX = pixelXY.pixelX + (tileXY.tileX - x) * 256;
+                                let pixelY = pixelXY.pixelY + (tileXY.tileY - y) * 256;
+                                if (index === 0){
+                                    ctx.moveTo(pixelX, pixelY);
+                                } else {
+                                    ctx.lineTo(pixelX, pixelY);
+                                }
+                            });
+                            ctx.closePath();
+                        });
+                        ctx.fill();
+                        ctx.stroke();
+                    } else if (feature.geometry.type === 'MultiPolygon') {
+                        ctx.strokeStyle = getRGBA(symbol.style.color, symbol.style.opacity);
+                        ctx.fillStyle = getRGBA(symbol.style.fillColor, symbol.style.fillOpacity);
+                        feature.geometry.coordinates.forEach( polygon => {
+                            ctx.beginPath();
+                            polygon.forEach( ring => {
+                                ring.forEach( (point, index) => {
+                                    let lng = point[0], lat = point[1];
+                                    let tileXY = this.lngLat2Tile(lng, lat, z);
+                                    let pixelXY = this.lngLat2Pixel(lng, lat, z);
+                                    let pixelX = pixelXY.pixelX + (tileXY.tileX - x) * 256;
+                                    let pixelY = pixelXY.pixelY + (tileXY.tileY - y) * 256;
+                                    if (index === 0){
+                                        ctx.moveTo(pixelX, pixelY);
+                                    } else {
+                                        ctx.lineTo(pixelX, pixelY);
+                                    }
+                                });
+                                ctx.closePath();
+                            });
+                            ctx.fill();
+                            ctx.stroke();
+                        });
+                    }
+                });
             },
             lngLat2Tile: function(lng, lat, z){
                 let tileX = Math.floor( (lng+180) / 360 * Math.pow(2, z) );
@@ -184,7 +295,7 @@ export class FrontendComponent implements OnInit {
                 item.layer.addTo(this.map);
             } else {
                 item.layer = L.vectorTileLayer({
-                    name: item.name,
+                    meta: item,
                     url: this.configService.config.api.web_api
                 });
                 item.layer.addTo(this.map);

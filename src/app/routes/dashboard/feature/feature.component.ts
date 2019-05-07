@@ -49,7 +49,7 @@ export class FeatureComponent implements OnInit {
             formData.append("file", files[i], files[i]['name']);
             if (fileExt.toLowerCase() === 'shp') name = fileName;
         }
-        this.http.post(this.configService.config.api.web_api + "/upload", formData)
+        this.http.post(this.configService.config.api.web_api + "/upload/shape", formData)
             .subscribe(res => {
                 if (name != ""){
                     this.featureService.publish(name).subscribe( async (res) => {
