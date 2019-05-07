@@ -26,7 +26,7 @@ export class GeojsonComponent implements OnInit {
             maxZoom: 18,
             renderer: new Canvas()
         })//.setView([29.576753, 105.030221], 13);
-            .setView([18.267234, 109.522854], 13);
+            .setView(this.configService.config.map.center, this.configService.config.map.zoom);
         let tile = new TileLayer('http://{s}.is.autonavi.com/appmaptile?style=7&x={x}&y={y}&z={z}&lang=zh_cn&size=1&scale=1', {
             maxZoom: 18,
             subdomains: ['webrd01', 'webrd02', 'webrd03', 'webrd04']
