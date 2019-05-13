@@ -19,6 +19,7 @@ import { GeojsonComponent } from './geojson/geojson.component';
 import { BackendComponent } from './backend/backend.component';
 import { FrontendComponent } from './frontend/frontend.component';
 import { SymbolComponent } from './symbol/symbol.component';
+import { StaticComponent } from './static/static.component';
 
 
 const routes: Routes = [
@@ -47,6 +48,10 @@ const routes: Routes = [
                 component: FrontendComponent
             },
             {
+                path: 'static',
+                component: StaticComponent
+            },
+            {
                 path: '**',
                 redirectTo: 'feature'
             }
@@ -69,7 +74,7 @@ const routes: Routes = [
         ProgressbarModule.forRoot(),
         CollapseModule.forRoot()
     ],
-    declarations: [DashboardComponent, FeatureComponent, GeojsonComponent, BackendComponent, FrontendComponent, SymbolComponent]
+    declarations: [DashboardComponent, FeatureComponent, GeojsonComponent, BackendComponent, FrontendComponent, SymbolComponent, StaticComponent]
 })
 export class DashboardModule {
 }

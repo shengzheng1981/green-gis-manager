@@ -72,7 +72,7 @@
                             <td style="width: 120px;">
                                 <div class="editable-cell">
                                     <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
-                                        {{item.style.fillColor}}
+                                        <input type="color" nz-input [ngModel]="item.style.fillColor" readonly  [disabled]="true">
                                     </div>
                                     <div class="editable-cell-input-wrapper" *ngIf="item.edit">
                                         <input type="color" nz-input [(ngModel)]="item.style_2.fillColor">
@@ -102,7 +102,7 @@
                             <td style="width: 120px;">
                                 <div class="editable-cell">
                                     <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
-                                        {{item.style.color}}
+                                        <input type="color" nz-input [ngModel]="item.style.color" readonly [disabled]="true">
                                     </div>
                                     <div class="editable-cell-input-wrapper" *ngIf="item.edit">
                                         <input type="color" nz-input [(ngModel)]="item.style_2.color">
@@ -288,7 +288,7 @@
                             <td style="width: 120px;">
                                 <div class="editable-cell">
                                     <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
-                                        {{item.style?.color}}
+                                        <input type="color" nz-input [ngModel]="item.style.color" readonly [disabled]="true">
                                     </div>
                                     <div class="editable-cell-input-wrapper" *ngIf="item.edit">
                                         <input type="color" nz-input [(ngModel)]="item.style_2.color">
@@ -355,7 +355,7 @@
                             <td style="width: 120px;">
                                 <div class="editable-cell">
                                     <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
-                                        {{item.style?.fillColor}}
+                                        <input type="color" nz-input [ngModel]="item.style.fillColor" readonly  [disabled]="true">
                                     </div>
                                     <div class="editable-cell-input-wrapper" *ngIf="item.edit">
                                         <input type="color" nz-input [(ngModel)]="item.style_2.fillColor">
@@ -385,7 +385,7 @@
                             <td style="width: 120px;">
                                 <div class="editable-cell">
                                     <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
-                                        {{item.style?.color}}
+                                        <input type="color" nz-input [ngModel]="item.style.color" readonly [disabled]="true">
                                     </div>
                                     <div class="editable-cell-input-wrapper" *ngIf="item.edit">
                                         <input type="color" nz-input [(ngModel)]="item.style_2.color">

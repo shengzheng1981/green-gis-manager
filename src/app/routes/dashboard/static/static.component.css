@@ -1,0 +1,21 @@
+.toolbar {
+    position: absolute;
+    top : 10px;
+    left: 80px;
+    z-index: 9999;
+    box-shadow: 2px 2px 5px #dddddd;
+    display: grid;
+    grid-gap: 20px;
+    /* autoprefixer: off */
+    grid-auto-flow: column;
+    grid-auto-columns: min-content;
+}
+
+.list-body{
+    background-color: rgba(255,255,255,0.9);
+    width: 200px;
+}
+
+.list-grid-item {
+    grid-template-columns: 1fr auto;
+}
