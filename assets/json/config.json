@@ -2,10 +2,12 @@
   "app" : {
     "name" : "green-gis-manager",
     "title" : "地图服务管理系统",
-    "version" : "1.0.0"
+    "version" : "1.0.1"
   },
   "api" : {
-    "web_api" : "http://green-gis-server.herokuapp.com"
+    "web_api" : "http://green-gis-server.herokuapp.com",
+    "heroku_api" : "http://green-gis-server.herokuapp.com",
+    "local_api" : "http://localhost:4000"
   },
   "map" : {
     "center":{
