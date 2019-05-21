@@ -79,7 +79,7 @@ export class FrontendComponent implements OnInit {
                 };
 
                 const getDefaultSymbol = () => {
-                    if (meta.geomType === 0){
+                    if (meta.geomType === 1){
                         return {
                             type : 10,
                             style : {
@@ -91,19 +91,31 @@ export class FrontendComponent implements OnInit {
                                 weight: 2
                             }
                         }
-                    } else if (meta.geomType === 1){
+                    } else if (meta.geomType === 2){
                         return {
-                            type : 10,
+                            type : 20,
                             style : {
                                 color: '#ff0000',
                                 opacity: 1,
                                 weight: 2
                             }
                         }
-                    } else if (meta.geomType === 2){
+                    } else if (meta.geomType === 3){
+                        return {
+                            type : 30,
+                            style : {
+                                fillColor: '#ff0000',
+                                fillOpacity: 1,
+                                color: '#ff0000',
+                                opacity: 1,
+                                weight: 2
+                            }
+                        }
+                    } else if (meta.geomType === 4){
                         return {
                             type : 10,
                             style : {
+                                radius: 6,
                                 fillColor: '#ff0000',
                                 fillOpacity: 1,
                                 color: '#ff0000',
@@ -184,6 +196,29 @@ export class FrontendComponent implements OnInit {
                             ctx.stroke();
                         }
 
+                    } else if (feature.geometry.type === 'MultiPoint') {
+                        feature.geometry.coordinates.forEach( async (point,index) => {
+                            let lng = point[0], lat = point[1];
+                            let tileXY = this.lngLat2Tile(lng, lat, z);
+                            let pixelXY = this.lngLat2Pixel(lng, lat, z);
+                            let pixelX = pixelXY.pixelX + (tileXY.tileX - x) * 256;
+                            let pixelY = pixelXY.pixelY + (tileXY.tileY - y) * 256;
+                            if (symbol.type === 11) {
+                                if (symbol.style.image) {
+                                    ctx.drawImage(symbol.style.image, pixelX, pixelY, symbol.style.width, symbol.style.height);
+                                } else {
+                                    symbol.style.image = await getImage(this.options.url + "/images/" +  (symbol.style.marker || 'marker.png'));
+                                    ctx.drawImage(symbol.style.image, pixelX, pixelY, symbol.style.width, symbol.style.height);
+                                }
+                            } else  {
+                                ctx.strokeStyle = getRGBA(symbol.style.color, symbol.style.opacity);
+                                ctx.fillStyle = getRGBA(symbol.style.fillColor, symbol.style.fillOpacity);
+                                ctx.beginPath(); //Start path
+                                ctx.arc(pixelX, pixelY, symbol.style.radius, 0, Math.PI * 2, true); // Draw a point using the arc function of the canvas with a point structure.
+                                ctx.fill();
+                                ctx.stroke();
+                            }
+                        });
                     } else if (feature.geometry.type === 'LineString') {
                         ctx.strokeStyle = getRGBA(symbol.style.color, symbol.style.opacity);
                         ctx.lineWidth = symbol.style.weight ? (symbol.style.weight || 2) : 2;
@@ -201,6 +236,25 @@ export class FrontendComponent implements OnInit {
                             }
                         });
                         ctx.stroke();
+                    } else if (feature.geometry.type === 'MultiLineString') {
+                        ctx.strokeStyle = getRGBA(symbol.style.color, symbol.style.opacity);
+                        ctx.lineWidth = symbol.style.weight ? (symbol.style.weight || 2) : 2;
+                        ctx.beginPath();
+                        feature.geometry.coordinates.forEach( line => {
+                            line.forEach( (point,index) => {
+                                let lng = point[0], lat = point[1];
+                                let tileXY = this.lngLat2Tile(lng, lat, z);
+                                let pixelXY = this.lngLat2Pixel(lng, lat, z);
+                                let pixelX = pixelXY.pixelX + (tileXY.tileX - x) * 256;
+                                let pixelY = pixelXY.pixelY + (tileXY.tileY - y) * 256;
+                                if (index === 0){
+                                    ctx.moveTo(pixelX, pixelY);
+                                } else {
+                                    ctx.lineTo(pixelX, pixelY);
+                                }
+                            });
+                            ctx.stroke();
+                        });
                     } else if (feature.geometry.type === 'Polygon') {
                         ctx.strokeStyle = getRGBA(symbol.style.color, symbol.style.opacity);
                         ctx.fillStyle = getRGBA(symbol.style.fillColor, symbol.style.fillOpacity);

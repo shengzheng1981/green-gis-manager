@@ -20,7 +20,7 @@
 
                         <div *ngFor="let item of features" class="list-grid-item list-grid1" [ngClass]="{'active': feature && item._id == feature._id}" (click)="active(item)">
                             <span class="area-a">{{item.name}}</span>
-                            <div class="area-b"><label class="label label-primary">{{item.geomType == 1 ? 'point' : (item.geomType == 2 ? 'polyline': (item.geomType == 3 ? 'polygon' : 'other'))}}</label></div>
+                            <div class="area-b"><label class="label label-primary">{{item.geomTypeAlias}}</label></div>
                             <span class="area-c"><i class="fas fa-th-large" [ngClass]="{'text-success': item.tile, 'text-gray': !item.tile}" tooltip="{{ 'spatial index:' + (item.tile || false)}}"></i></span>
                             <span class="area-d"><i class="fas fa-inbox" [ngClass]="{'text-success': item.cache, 'text-gray': !item.cache}" tooltip="{{ 'cache in memory:' + (item.cache || false)}}"></i></span>
                             <span class="area-e"><i class="fas fa-image" [ngClass]="{'text-success': item.image, 'text-gray': !item.image}" tooltip="{{ 'static images:' + (item.image || false)}}"></i></span>
@@ -54,7 +54,7 @@
                                     </div>
                                     <div class="info-item">
                                         <div class="info-label">geometry type</div>
-                                        <div class="info-value"><label class="label label-primary">{{feature.geomType == 1 ? 'point' : (feature.geomType == 2 ? 'polyline': (feature.geomType == 3 ? 'polygon' : 'other'))}}</label></div>
+                                        <div class="info-value"><label class="label label-primary">{{feature.geomTypeAlias}}</label></div>
                                     </div>
                                     <div class="info-item">
                                         <div class="info-label">enable spatial index</div>
@@ -401,7 +401,107 @@
                         </div>
                     </nz-tab>
                     <nz-tab nzTitle="Label">
-                        Content of Tab Pane 3
+                        <div class="label-container">
+                            <div class="panel">
+                                <div class="label-info-form" >
+                                    <div class="info-item">
+                                        <div class="info-label">field</div>
+                                        <nz-select [(ngModel)]="feature.label.field" nzAllowClear nzPlaceHolder="Choose Field" [compareWith]="compareField">
+                                            <nz-option *ngFor="let field of feature.properties" [nzValue]="field" [nzLabel]="field.name" ></nz-option>
+                                        </nz-select>
+                                    </div>
+                                    <div class="info-item">
+                                    </div>
+                                    <div class="info-item">
+                                    </div>
+                                    <div class="info-item">
+                                    </div>
+                                    <div class="info-item">
+                                    </div>
+
+                                    <div class="info-item">
+                                        <div class="info-label">zoom min</div>
+                                        <div class="info-value">
+                                            <input nz-input [(ngModel)]="feature.label.zoom.min">
+                                        </div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">zoom max</div>
+                                        <div class="info-value">
+                                            <input nz-input [(ngModel)]="feature.label.zoom.max">
+                                        </div>
+                                    </div>
+                                    <div class="info-item">
+                                    </div>
+                                    <div class="info-item">
+                                    </div>
+                                    <div class="info-item">
+                                    </div>
+
+                                    <div class="info-item">
+                                        <div class="info-label">font family</div>
+                                        <div class="info-value">
+                                            <input nz-input [(ngModel)]="feature.label.font.family">
+                                        </div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">font size</div>
+                                        <div class="info-value">
+                                            <input nz-input [(ngModel)]="feature.label.font.size">
+                                        </div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">font color</div>
+                                        <div class="info-value">
+                                            <input type="color" nz-input [(ngModel)]="feature.label.font.color">
+                                        </div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">font bold</div>
+                                        <div class="info-value">
+                                            <input nz-input [(ngModel)]="feature.label.font.bold">
+                                        </div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">padding</div>
+                                        <div class="info-value">
+                                            <input nz-input [(ngModel)]="feature.label.background.padding">
+                                        </div>
+                                    </div>
+
+                                    <div class="info-item">
+                                        <div class="info-label">back visible</div>
+                                        <div class="info-value">
+                                            <nz-switch [(ngModel)]="feature.label.background.visible"></nz-switch>
+                                        </div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">back color</div>
+                                        <div class="info-value">
+                                            <input type="color" nz-input [(ngModel)]="feature.label.background.color">
+                                        </div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">border visible</div>
+                                        <div class="info-value">
+                                            <nz-switch [(ngModel)]="feature.label.border.visible"></nz-switch>
+                                        </div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">border color</div>
+                                        <div class="info-value">
+                                            <input type="color" nz-input [(ngModel)]="feature.label.border.color">
+                                        </div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">border width</div>
+                                        <div class="info-value">
+                                            <input nz-input [(ngModel)]="feature.label.border.width">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </nz-tab>
                     <nz-tab nzTitle="Table">
                         <div class="data-container">

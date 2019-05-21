@@ -41,6 +41,7 @@ export class FeatureComponent implements OnInit {
         this.ribbon();
     }
     constructor(private http: HttpClient, private featureService: FeatureService, private configService: ConfigService, private symbolService: SymbolService) {
+
     }
 
     ngOnInit() {
@@ -49,6 +50,25 @@ export class FeatureComponent implements OnInit {
 
     async init(){
         this.features = await this.featureService.getAll().toPromise();
+        this.features.forEach( feature => {
+            switch (feature.geomType)
+            {
+                case 1:
+                    feature.geomTypeAlias = 'point';
+                    break;
+                case 2:
+                    feature.geomTypeAlias = 'polyline';
+                    break;
+                case 3:
+                    feature.geomTypeAlias = 'polygon';
+                    break;
+                case 4:
+                    feature.geomTypeAlias = 'multipoint';
+                    break;
+                default:
+                    feature.geomTypeAlias = 'other';
+            }
+        });
         this.feature = undefined;
     }
 
@@ -88,7 +108,7 @@ export class FeatureComponent implements OnInit {
                                 confirmButtonText: 'OK'
                             });
                             await this.init();
-                            this.feature = this.features.find( item => item.name === name );
+                            this.active(this.features.find( item => item.name === name ));
                         } else {
                             swal({
                                 title: 'warning',
@@ -173,6 +193,8 @@ export class FeatureComponent implements OnInit {
 
     async active(item) {
         this.feature = item;
+        this.feature.label = this.feature.label || { field: {}, position: {}, offset: {}, font: {}, zoom:{}, background:{}, border:{} };
+        this.feature.label.field =    this.feature.label.field || {};
         this.feature.renderer = this.feature.renderer || { renderType: 0, simple: {} };
         this.feature.renderer.simple = this.feature.renderer.simple || {};
         this.feature.renderer.category = this.feature.renderer.category || {};
