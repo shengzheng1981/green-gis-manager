@@ -1,8 +1,8 @@
 {
   "app" : {
     "name" : "green-gis-manager",
-    "title" : "地图服务管理系统",
-    "version" : "1.0.0"
+    "title" : "Green GIS Manager",
+    "version" : "1.0.1"
   },
   "api" : {
     "web_api" : "http://green-gis-server.herokuapp.com"

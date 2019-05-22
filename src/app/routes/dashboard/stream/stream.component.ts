@@ -1,17 +1,16 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {Map, TileLayer, Marker, Icon, CircleMarker, GeoJSON, Canvas, LayerGroup, Polyline, Polygon} from 'leaflet';
-import {HttpClient} from '@angular/common/http';
 import {FeatureService} from '../../../shared/services/feature.service';
 import {ConfigService} from '../../../shared/services/config.service';
-
-
+import {HttpClient} from '@angular/common/http';
+import io from 'socket.io-client';
 
 @Component({
-    selector: 'app-geojson',
-    templateUrl: './geojson.component.html',
-    styleUrls: ['./geojson.component.css']
+  selector: 'app-stream',
+  templateUrl: './stream.component.html',
+  styleUrls: ['./stream.component.css']
 })
-export class GeojsonComponent implements OnInit {
+export class StreamComponent implements OnInit {
 
     features = [];
     map : any;
@@ -19,196 +18,6 @@ export class GeojsonComponent implements OnInit {
     @ViewChild('map') mapDiv: ElementRef;
 
     constructor(private http: HttpClient, private featureService: FeatureService, private configService: ConfigService) {
-        L.Label = L.Canvas
-            .extend({
-                options : {
-                    collision: true,   //叠盖冲突选项
-                    mode: 0              //0 default 1 create 2 select(identify)
-                },
-
-                initialize : function(options) {
-                    options = L.Util.setOptions(this, options);
-                    //add
-                    L.Util.stamp(this);
-                    this._layers = {};
-                    this._labels = [];
-                    this._preAdds = [];   //在Label Canvas还没有添加到map时，对addLabel的label进行记录，以便在onAdd时进行添加。
-                },
-                //Label Canvas添加到map时响应
-                onAdd: function () {
-                    L.Canvas.prototype.onAdd.call(this);
-                    // Redraw vectors since canvas is cleared upon removal,
-                    // in case of removing the renderer itself from the map.
-                    //this._draw();
-                    if (!this._map) return;
-                    this._preAdds.forEach( item => {
-                        item.addTo(this._map);
-                        this._text(item);
-                        this._labels.push(item.label);
-                    });
-                    this._preAdds = [];
-                },
-                //外部添加label
-                addLabel: function(label) {
-                    const circle = new L.CircleMarker([label.position.lat, label.position.lng], {radius: 1, stroke: false, renderer: this});
-                    circle.label = label;
-                    if (this._map) {
-                        circle.addTo(this._map);
-                        this._text(circle);
-                        this._labels.push(circle.label);
-                    } else {
-                        this._preAdds.push(circle);
-                    }
-                },
-                //外部清除某个label
-                removeLabel: function(label) {
-                    const item = Object.keys(this._layers).find( key => {
-                        const circle = this._layers[key];
-                        return circle && circle.label && circle.label._id == label._id;
-                    });
-                    item && this._layers[item].removeFrom(this._map);
-                    this._redraw();
-                },
-                //外部清除所有label
-                clearLabel: function() {
-                    Object.keys(this._layers).forEach( key => {
-                        const circle = this._layers[key];
-                        circle.removeFrom(this._map);
-                    });
-                    this._layers = {};
-                    this._labels = [];
-                    this._preAdds = [];
-                    this._redraw();
-                },
-                //外部redraw某个label
-                redrawLabel: function(label) {
-                    const item = Object.keys(this._layers).find( key => {
-                        const layer = this._layers[key];
-                        return layer && layer.label && layer.label._id == label._id;
-                    });
-                    item && this._updateCircle(this._layers[item]);
-                },
-                //外部redraw
-                redraw: function() {
-                    this._redraw();
-                },
-
-                //this._update => fire('update') => canvas._updatePaths => canvas._redraw => canvas._draw => layer(circlemarker)._updatePath => this._updateCircle => (Label)this._text
-                //this._update => fire('update') => canvas._updatePaths => layer._update                  => layer(circlemarker)._updatePath => this._updateCircle => (Label)this._text
-                //更新函数，调用逻辑流程顺序见上方
-                _update : function() {
-                    //this._time = new Date();
-                    //console.log(this._time.toString() + " update");
-                    // drawn
-                    this._drawn = [];
-                    L.Canvas.prototype._update.call(this);
-                },
-                //重载，非常重要，否则layer._updatePath会调用两次
-                _updatePaths: function () {
-                    if (this._postponeUpdatePaths) { return; }
-
-                    this._redrawBounds = null;
-                    this._redraw();
-                },
-                //无需重载，调试用
-                _redraw: function () {
-                    //console.log(this._time.toString() + " redraw");
-                    L.Canvas.prototype._redraw.call(this);
-                    console.log("all " + this._labels.length + " _drawn " + this._drawn.length );
-                },
-                //无需重载，调试用
-                _draw: function () {
-                    //console.log(this._time.toString() + " draw");
-                    L.Canvas.prototype._draw.call(this);
-                },
-                //Polyline和Polygon的更新
-                _updatePoly : function(layer, closed) {
-                    L.Canvas.prototype._updatePoly.call(this, layer, closed);
-                    this._text(layer);
-                },
-                //CircleMarker的更新
-                _updateCircle : function(layer) {
-                    L.Canvas.prototype._updateCircle.call(this, layer);
-                    this._text(layer);
-                },
-                //标注
-                _text : function(layer) {
-                    if (layer.label && layer.label.text != undefined) {
-                        layer.label.drawn = false;
-                        if (!this._bounds || (layer._pxBounds && layer._pxBounds.intersects(this._bounds))) {
-                            const zoom = this._map.getZoom();
-                            const min = ((layer.label.zoom || {}).min || 1);
-                            const max = ((layer.label.zoom || {}).max || 18);
-                            if (zoom >= min && zoom <= max) {
-                                this._ctx.save();
-                                this._ctx.globalAlpha = 1;
-                                this._ctx.font = ((layer.label.font || {}).size || 12) + 'px ' + ((layer.label.font || {}).family || 'YaHei') +  ' ' + ((layer.label.font || {}).bold || 'Bold');
-                                layer.label.point = layer._point;
-                                layer.label.width = this._ctx.measureText(layer.label.text).width + ((layer.label.background || {}).padding || 5) * 2;
-                                layer.label.height = ((layer.label.font || {}).size || 12)  + ((layer.label.background || {}).padding || 5) * 2;
-                                if (this.options.collision) {
-                                    const bounds = L.bounds(L.point(layer.label.point.x, layer.label.point.y), L.point(layer.label.width + layer.label.point.x, layer.label.height + layer.label.point.y));
-                                    //const object = this._labels.filter(label => label.drawn).map( label => L.bounds(L.point(label.point.x, label.point.y), L.point(label.width + label.point.x, label.height + label.point.y)))
-                                    const object = this._drawn.map( (label:any) => L.bounds(L.point(label.point.x, label.point.y), L.point(label.width + label.point.x, label.height + label.point.y)))
-                                        .find( item => item.intersects(bounds) );
-                                    if (object) {
-                                        this._ctx.restore();
-                                        return;
-                                    }
-                                }
-                                if ((layer.label.border || {}).visible) {
-                                    this._ctx.lineJoin = 'bevel';
-                                    this._ctx.lineWidth = ((layer.label.border || {}).width || 5);
-                                    this._ctx.strokeStyle = ((layer.label.border || {}).color || 'rgba(0,0,0,0)');
-                                    this._ctx.strokeRect(layer._point.x - ((layer.label.background || {}).padding || 5), layer._point.y - ((layer.label.background || {}).padding || 5) - 2, layer.label.width, layer.label.height);
-                                }
-                                if ((layer.label.background || {}).visible) {
-                                    this._ctx.fillStyle = ((layer.label.background || {}).color || 'rgba(0,0,0,0)');
-                                    this._ctx.fillRect(layer._point.x - ((layer.label.background || {}).padding || 5), layer._point.y - ((layer.label.background || {}).padding || 5) - 2, layer.label.width, layer.label.height);
-                                }
-                                this._ctx.textBaseline = 'top';
-                                this._ctx.fillStyle = ((layer.label.font || {}).color || 'rgba(0,0,0,1)');
-                                this._ctx.fillText(layer.label.text, layer._point.x, layer._point.y);
-                                this._drawn.push(layer.label);
-                                layer.label.drawn = true;
-                                this._ctx.restore();
-                            }
-                        }
-                    }
-                },
-
-                //以下内容处理交互，点击事件
-                setMode( mode ){
-                    this.options.mode = mode;
-                },
-                //点击事件
-                identify( e ) {
-                    const point = e.layerPoint;
-                    const ids = Object.keys(this._layers).filter( key => {
-                        const layer = this._layers[key];
-                        return point.x >= layer.label.point.x && point.y >= layer.label.point.y && point.x <= layer.label.point.x + layer.label.width && point.y <= layer.label.point.y + layer.label.height
-                    });
-                    if (ids.length > 0) {
-                        return  this._layers[ids[0]].label;
-                    }
-                },
-                //悬停时，改变鼠标
-                _handleMouseHover : function(e, point) {
-                    if (this.options.mode != 2) return;
-                    const ids = Object.keys(this._layers).filter( key => {
-                        const layer = this._layers[key];
-                        return point.x >= layer.label.point.x && point.y >= layer.label.point.y && point.x <= layer.label.point.x + layer.label.width && point.y <= layer.label.point.y + layer.label.height
-                    });
-                    if (ids.length > 0){
-                        L.DomUtil.addClass(this._container,
-                            'leaflet-interactive'); // change cursor
-                    } else {
-                        L.DomUtil.removeClass(this._container,
-                            'leaflet-interactive'); // change cursor
-                    }
-
-                }
-            });
     }
 
     ngOnInit() {
@@ -225,11 +34,6 @@ export class GeojsonComponent implements OnInit {
         });
         tile.addTo(this.map);
 
-        this.map.createPane("labelPane");
-        this.map.getPane('labelPane').style.zIndex = 450;
-        this.map.on("click", (e) => {
-            console.log(e);
-        });
     }
 
     switch(item) {
@@ -237,32 +41,23 @@ export class GeojsonComponent implements OnInit {
         if (item.checked) {
             if (item.layer) {
                 item.layer.addTo(this.map);
-                if (item.labelRenderer) {
-                    item.labelRenderer.addTo(this.map);
-                }
             } else {
+                const socket = io(this.configService.config.api.web_api);
                 item.layer = new LayerGroup();
                 item.layer.addTo(this.map);
-                if (item.label && item.label.field && item.label.field.name) {
-                    item.labelRenderer = new L.Label({ pane: "labelPane" });
-                    item.labelRenderer.addTo(this.map);
-                }
-                this.http.get(this.featureService.url + '/geojson/' + item.name).subscribe((res:any) => {
-                    this.draw(item, res.features);
+                socket.emit('stream', { name: item.name});
+                socket.on('streaming',  (features) =>{
+                    this.draw(item, features);
                 });
             }
         } else {
             if (item.layer) {
                 item.layer.removeFrom(this.map);
-                if (item.labelRenderer) {
-                    item.labelRenderer.removeFrom(this.map);
-                }
             }
         }
     }
 
     async draw(meta, features){
-
         const getRGBA = ( color, opacity ) => {
             color = color || '#ff0000';
             opacity = opacity != undefined ? opacity : 1.0;
@@ -511,5 +306,4 @@ export class GeojsonComponent implements OnInit {
             }
         });
     };
-
 }

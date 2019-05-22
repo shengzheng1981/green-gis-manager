@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {ConfigService} from '../../shared/services/config.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -11,7 +12,7 @@ export class DashboardComponent implements OnInit {
   layoutVisible : boolean = false;
   mapVisible : boolean = false;
 
-  constructor() {
+  constructor(public configService: ConfigService) {
 
   }
 

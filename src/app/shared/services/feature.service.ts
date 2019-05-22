@@ -34,6 +34,10 @@ export class FeatureService {
         return this.http.get(this.url + '/generate/' + name);
     }
 
+    testGenerate(name: string): Observable<any> {
+        return this.http.get(this.url + '/test/generate/' + name);
+    }
+
     getCategories(name: string, field: string): Observable<any> {
         return this.http.get(this.url + '/category/' + name + '/' + field);
     }

@@ -21,7 +21,8 @@ export class FeatureComponent implements OnInit {
         },
         symbols : [],
         tile: {
-            message: ''
+            message: '',
+            stats: []
         },
         symbol: {
             start_color: "#ff0000",
@@ -219,6 +220,11 @@ export class FeatureComponent implements OnInit {
             item.style_2 = Object.assign({}, item.style);
         });
         this.option.symbols = await this.symbolService.getByGeomType(this.feature.geomType).toPromise();
+        this.featureService.testGenerate(this.feature.name).subscribe( res => {
+            if (res.result) {
+                this.option.tile.stats = res.stats.filter( item => item._id > 0).sort( (a, b) =>  a._id - b._id );
+            }
+        });
     }
 
     //field

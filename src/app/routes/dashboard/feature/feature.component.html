@@ -75,8 +75,30 @@
                             <div class="panel-heading">
                                 <span class="panel-title">Tile Info</span>
                             </div>
-                            <div class="panel-body">
-                                <button class="btn btn-primary" (click)="generateTile()">Create</button>
+                            <div class="panel-body" style="display: grid;grid-gap:10px;grid-template-rows: auto 1fr">
+                                <div><button class="btn btn-primary" (click)="generateTile()">Create</button></div>
+                                <nz-table #tileTable [nzFrontPagination]="false" [nzData]="option.tile.stats" [nzShowPagination]="false" [nzScroll]="{'y': '260px'}">
+                                    <thead>
+                                    <tr>
+                                        <th style="width: 200px;">Level</th>
+                                        <th style="width: 200px;">xmin</th>
+                                        <th style="width: 200px;">xmax</th>
+                                        <th style="width: 200px;">ymin</th>
+                                        <th style="width: 200px;">ymax</th>
+                                        <th style="width: 200px;">tiles</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr *ngFor="let item of tileTable.data">
+                                        <td style="width: 200px;">{{item._id}}</td>
+                                        <td style="width: 200px;">{{item.minx}}</td>
+                                        <td style="width: 200px;">{{item.maxx}}</td>
+                                        <td style="width: 200px;">{{item.miny}}</td>
+                                        <td style="width: 200px;">{{item.maxy}}</td>
+                                        <td style="width: 200px;">{{(item.maxx - item.minx + 1) * (item.maxy - item.miny + 1)}}</td>
+                                    </tr>
+                                    </tbody>
+                                </nz-table>
                             </div>
                         </div>
                     </nz-tab>

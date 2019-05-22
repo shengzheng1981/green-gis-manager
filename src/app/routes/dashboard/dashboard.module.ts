@@ -21,6 +21,7 @@ import { FrontendComponent } from './frontend/frontend.component';
 import { SymbolComponent } from './symbol/symbol.component';
 import { StaticComponent } from './static/static.component';
 import { MapComponent } from './map/map.component';
+import { StreamComponent } from './stream/stream.component';
 
 
 const routes: Routes = [
@@ -57,6 +58,10 @@ const routes: Routes = [
                 component: StaticComponent
             },
             {
+                path: 'stream',
+                component: StreamComponent
+            },
+            {
                 path: '**',
                 redirectTo: 'feature'
             }
@@ -79,7 +84,7 @@ const routes: Routes = [
         ProgressbarModule.forRoot(),
         CollapseModule.forRoot()
     ],
-    declarations: [DashboardComponent, FeatureComponent, GeojsonComponent, BackendComponent, FrontendComponent, SymbolComponent, StaticComponent, MapComponent]
+    declarations: [DashboardComponent, FeatureComponent, GeojsonComponent, BackendComponent, FrontendComponent, SymbolComponent, StaticComponent, MapComponent, StreamComponent]
 })
 export class DashboardModule {
 }
