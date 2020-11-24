@@ -21,7 +21,7 @@ import {ConfigService} from './shared/services/config.service';
         HttpClientModule,
         LoadingBarHttpClientModule,
         RoutesModule,
-        SharedModule
+        SharedModule.forRoot()
     ],
     providers: [{
         provide: APP_INITIALIZER,
