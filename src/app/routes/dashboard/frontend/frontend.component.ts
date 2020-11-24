@@ -14,7 +14,7 @@ export class FrontendComponent implements OnInit {
     features = [];
     map : any;
 
-    @ViewChild('map') mapDiv: ElementRef;
+    @ViewChild('map', { static: true }) mapDiv: ElementRef;
 
     constructor(private http: HttpClient, private featureService: FeatureService, private configService: ConfigService) {
         L.VectorTileLayer = L.GridLayer.extend({
@@ -79,7 +79,7 @@ export class FrontendComponent implements OnInit {
                 };
 
                 const getDefaultSymbol = () => {
-                    if (meta.geomType === 1){
+                    if (meta.geotype === 1){
                         return {
                             type : 10,
                             style : {
@@ -91,7 +91,7 @@ export class FrontendComponent implements OnInit {
                                 weight: 2
                             }
                         }
-                    } else if (meta.geomType === 2){
+                    } else if (meta.geotype === 2){
                         return {
                             type : 20,
                             style : {
@@ -100,7 +100,7 @@ export class FrontendComponent implements OnInit {
                                 weight: 2
                             }
                         }
-                    } else if (meta.geomType === 3){
+                    } else if (meta.geotype === 3){
                         return {
                             type : 30,
                             style : {
@@ -111,7 +111,7 @@ export class FrontendComponent implements OnInit {
                                 weight: 2
                             }
                         }
-                    } else if (meta.geomType === 4){
+                    } else if (meta.geotype === 4){
                         return {
                             type : 10,
                             style : {
@@ -128,6 +128,7 @@ export class FrontendComponent implements OnInit {
 
                 const getSymbol = (feature) => {
                     const defaultSymbol = getDefaultSymbol();
+                    if (!meta.renderer) return defaultSymbol;
                     if (meta.renderer.renderType === 0) {
                         return meta.renderer.simple ? meta.renderer.simple.symbol : defaultSymbol;
                     } else if (meta.renderer.renderType === 1) {
@@ -163,7 +164,7 @@ export class FrontendComponent implements OnInit {
                 };
 
                 //no renderer
-                if(!meta.renderer) return;
+                //if(!meta.renderer) return;
 
                 //default
                 ctx.strokeStyle = 'rgba(255,0,0,1)';

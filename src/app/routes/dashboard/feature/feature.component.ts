@@ -52,7 +52,7 @@ export class FeatureComponent implements OnInit {
     async init(){
         this.features = await this.featureService.getAll().toPromise();
         this.features.forEach( feature => {
-            switch (feature.geomType)
+            switch (feature.geotype)
             {
                 case 1:
                     feature.geomTypeAlias = 'point';
@@ -97,30 +97,27 @@ export class FeatureComponent implements OnInit {
             formData.append("file", files[i], files[i]['name']);
             if (fileExt.toLowerCase() === 'shp') name = fileName;
         }
-        this.http.post(this.configService.config.api.web_api + "/upload/shape", formData)
-            .subscribe(res => {
-                if (name != ""){
-                    this.featureService.publish(name).subscribe( async (res) => {
-                        if (res.result){
-                            swal({
-                                title: 'information',
-                                text: 'publish success!',
-                                type: 'success',
-                                confirmButtonText: 'OK'
-                            });
-                            await this.init();
-                            this.active(this.features.find( item => item.name === name ));
-                        } else {
-                            swal({
-                                title: 'warning',
-                                text: 'name exist!',
-                                type: 'warning',
-                                confirmButtonText: 'OK'
-                            });
-                        }
+        if (name != ""){
+            this.featureService.publish(name, formData).subscribe( async (res) => {
+                if (res.result){
+                    swal({
+                        title: 'information',
+                        text: 'publish success!',
+                        type: 'success',
+                        confirmButtonText: 'OK'
+                    });
+                    await this.init();
+                    this.active(this.features.find( item => item.name === name ));
+                } else {
+                    swal({
+                        title: 'warning',
+                        text: 'name exist!',
+                        type: 'warning',
+                        confirmButtonText: 'OK'
                     });
                 }
             });
+        }
     }
 
     delete(){
@@ -204,7 +201,7 @@ export class FeatureComponent implements OnInit {
         this.feature.renderer.class = this.feature.renderer.class || {};
         this.feature.renderer.class.field =    this.feature.renderer.class.field || {};
         this.feature.renderer.class.breaks = this.feature.renderer.class.breaks || [];
-        this.feature.properties.forEach( item => {
+        this.feature.fields.forEach( item => {
             item.alias_2 = item.alias;
         });
         this.feature.renderer.category.field_2 = Object.assign({}, this.feature.renderer.category.field);
@@ -219,12 +216,12 @@ export class FeatureComponent implements OnInit {
             item.max_2 = item.max;
             item.style_2 = Object.assign({}, item.style);
         });
-        this.option.symbols = await this.symbolService.getByGeomType(this.feature.geomType).toPromise();
-        this.featureService.testGenerate(this.feature.name).subscribe( res => {
+        // this.option.symbols = await this.symbolService.getByGeomType(this.feature.geotype).toPromise();
+        /*this.featureService.testGenerate(this.feature.name).subscribe( res => {
             if (res.result) {
                 this.option.tile.stats = res.stats.filter( item => item._id > 0).sort( (a, b) =>  a._id - b._id );
             }
-        });
+        });*/
     }
 
     //field
@@ -254,8 +251,8 @@ export class FeatureComponent implements OnInit {
             cancelButtonText: 'Cancel'
         }).then(result => {
             if (result.value) {
-                const index = this.feature.properties.findIndex( item => item.name === field.name );
-                this.feature.properties.splice(index, 1);
+                const index = this.feature.fields.findIndex( item => item.name === field.name );
+                this.feature.fields.splice(index, 1);
             }
         });
     }
@@ -318,56 +315,54 @@ export class FeatureComponent implements OnInit {
             cancelButtonText: 'Cancel'
         }).then(result => {
             if (result.value) {
-                this.featureService.getCategories(this.feature.name, this.feature.renderer.category.field_2.name).subscribe( res => {
-                    if (res.result) {
-                        const start = this.getRGB(this.option.symbol.start_color);
-                        const end = this.getRGB(this.option.symbol.end_color);
-                        if (res.array.length == 0) {
-                            swal({
-                                title: 'warning',
-                                text: 'field has no value!',
-                                type: 'warning',
-                                confirmButtonText: 'OK'
-                            });
-                            return;
-                        } else if (res.array.length > 100){
-                            swal({
-                                title: 'warning',
-                                text: 'field has too many categories(more than 100)!',
-                                type: 'warning',
-                                confirmButtonText: 'OK'
-                            });
-                            return;
-                        }
-                        this.feature.renderer.category.field = Object.assign({}, this.feature.renderer.category.field_2);
-                        const red = res.array.length > 1 ? Array.from({length: res.array.length}, (v, i) => Math.round(start[0] + (end[0] - start[0]) / (res.array.length - 1) * i) ) : [start[0]];
-                        const green = res.array.length > 1 ? Array.from({length: res.array.length}, (v, i) => Math.round(start[1] + (end[1] - start[1]) / (res.array.length - 1) * i) ) : [start[1]];
-                        const blue = res.array.length > 1 ? Array.from({length: res.array.length}, (v, i) => Math.round(start[2] + (end[2] - start[2]) / (res.array.length - 1) * i) ) : [start[2]];
-                        this.feature.renderer.category.categories = res.array.map( (item,i) => {
-                            return {
-                                auto: true,
-                                label: item,
-                                label_2: item,
-                                value: item,
-                                style: {
-                                    radius: 6,
-                                    fillColor: '#' + red[i].toString(16).padStart(2, "0") + green[i].toString(16).padStart(2, "0") + blue[i].toString(16).padStart(2, "0"),
-                                    fillOpacity: 1,
-                                    color: '#' + red[i].toString(16).padStart(2, "0") + green[i].toString(16).padStart(2, "0") + blue[i].toString(16).padStart(2, "0"),
-                                    opacity: 1,
-                                    weight: 2
-                                },
-                                style_2: {
-                                    radius: 6,
-                                    fillColor: '#' + red[i].toString(16).padStart(2, "0") + green[i].toString(16).padStart(2, "0") + blue[i].toString(16).padStart(2, "0"),
-                                    fillOpacity: 1,
-                                    color: '#' + red[i].toString(16).padStart(2, "0") + green[i].toString(16).padStart(2, "0") + blue[i].toString(16).padStart(2, "0"),
-                                    opacity: 1,
-                                    weight: 2
-                                }
-                            }
-                        })
+                this.featureService.getCategories(this.feature.name, this.feature.renderer.category.field_2.name).subscribe( array => {
+                    const start = this.getRGB(this.option.symbol.start_color);
+                    const end = this.getRGB(this.option.symbol.end_color);
+                    if (!Array.isArray(array) || array.length == 0) {
+                        swal({
+                            title: 'warning',
+                            text: 'field has no value!',
+                            type: 'warning',
+                            confirmButtonText: 'OK'
+                        });
+                        return;
+                    } else if (array.length > 100){
+                        swal({
+                            title: 'warning',
+                            text: 'field has too many categories(more than 100)!',
+                            type: 'warning',
+                            confirmButtonText: 'OK'
+                        });
+                        return;
                     }
+                    this.feature.renderer.category.field = Object.assign({}, this.feature.renderer.category.field_2);
+                    const red = array.length > 1 ? Array.from({length: array.length}, (v, i) => Math.round(start[0] + (end[0] - start[0]) / (array.length - 1) * i) ) : [start[0]];
+                    const green = array.length > 1 ? Array.from({length: array.length}, (v, i) => Math.round(start[1] + (end[1] - start[1]) / (array.length - 1) * i) ) : [start[1]];
+                    const blue = array.length > 1 ? Array.from({length: array.length}, (v, i) => Math.round(start[2] + (end[2] - start[2]) / (array.length - 1) * i) ) : [start[2]];
+                    this.feature.renderer.category.categories = array.map( (item,i) => {
+                        return {
+                            auto: true,
+                            label: item,
+                            label_2: item,
+                            value: item,
+                            style: {
+                                radius: 6,
+                                fillColor: '#' + red[i].toString(16).padStart(2, "0") + green[i].toString(16).padStart(2, "0") + blue[i].toString(16).padStart(2, "0"),
+                                fillOpacity: 1,
+                                color: '#' + red[i].toString(16).padStart(2, "0") + green[i].toString(16).padStart(2, "0") + blue[i].toString(16).padStart(2, "0"),
+                                opacity: 1,
+                                weight: 2
+                            },
+                            style_2: {
+                                radius: 6,
+                                fillColor: '#' + red[i].toString(16).padStart(2, "0") + green[i].toString(16).padStart(2, "0") + blue[i].toString(16).padStart(2, "0"),
+                                fillOpacity: 1,
+                                color: '#' + red[i].toString(16).padStart(2, "0") + green[i].toString(16).padStart(2, "0") + blue[i].toString(16).padStart(2, "0"),
+                                opacity: 1,
+                                weight: 2
+                            }
+                        }
+                    });
                 })
             }
         });
@@ -388,51 +383,49 @@ export class FeatureComponent implements OnInit {
             cancelButtonText: 'Cancel'
         }).then(result => {
             if (result.value) {
-                this.featureService.getClasses(this.feature.name, this.feature.renderer.class.field_2.name).subscribe( res => {
-                    if (res.result) {
-                        const start = this.getRGB(this.option.symbol.start_color);
-                        const end = this.getRGB(this.option.symbol.end_color);
-                        const min = res.stat[0].min, max = res.stat[0].max;
-                        this.feature.renderer.class.field = Object.assign({}, this.feature.renderer.class.field_2);
+                this.featureService.getClasses(this.feature.name, this.feature.renderer.class.field_2.name).subscribe( stat => {
+                    const start = this.getRGB(this.option.symbol.start_color);
+                    const end = this.getRGB(this.option.symbol.end_color);
+                    const min = stat[0].min, max = stat[0].max;
+                    this.feature.renderer.class.field = Object.assign({}, this.feature.renderer.class.field_2);
 
-                        const red = Array.from({length: this.option.symbol.classes}, (v, i) => Math.round(start[0] + (end[0] - start[0]) / (this.option.symbol.classes - 1) * i) );
-                        const green = Array.from({length: this.option.symbol.classes}, (v, i) => Math.round(start[1] + (end[1] - start[1]) / (this.option.symbol.classes - 1) * i) );
-                        const blue = Array.from({length: this.option.symbol.classes}, (v, i) => Math.round(start[2] + (end[2] - start[2]) / (this.option.symbol.classes - 1) * i) );
-                        this.feature.renderer.class.breaks = Array.from({length: this.option.symbol.classes},(item,i) => {
-                            return {
-                                auto: true,
-                                min: Math.round((min + (max - min) / (this.option.symbol.classes) * i) * 1000 ) / 1000,
-                                max: Math.round((min + (max - min) / (this.option.symbol.classes) * (i + 1) ) * 1000 ) / 1000,
-                                min_2: Math.round((min + (max - min) / (this.option.symbol.classes) * i) * 1000 ) / 1000,
-                                max_2: Math.round((min + (max - min) / (this.option.symbol.classes) * (i + 1) ) * 1000 ) / 1000,
-                                label: (min + (max - min) / (this.option.symbol.classes) * i).toFixed(3) + "-" + (min + (max - min) / (this.option.symbol.classes) * (i + 1)).toFixed(3),
-                                label_2: (min + (max - min) / (this.option.symbol.classes) * i).toFixed(3) + "-" + (min + (max - min) / (this.option.symbol.classes) * (i + 1)).toFixed(3),
-                                style: {
-                                    radius: 6,
-                                    fillColor: '#' + red[i].toString(16).padStart(2, "0") + green[i].toString(16).padStart(2, "0") + blue[i].toString(16).padStart(2, "0"),
-                                    fillOpacity: 1,
-                                    color: '#' + red[i].toString(16).padStart(2, "0") + green[i].toString(16).padStart(2, "0") + blue[i].toString(16).padStart(2, "0"),
-                                    opacity: 1,
-                                    weight: 2
-                                },
-                                style_2: {
-                                    radius: 6,
-                                    fillColor: '#' + red[i].toString(16).padStart(2, "0") + green[i].toString(16).padStart(2, "0") + blue[i].toString(16).padStart(2, "0"),
-                                    fillOpacity: 1,
-                                    color: '#' + red[i].toString(16).padStart(2, "0") + green[i].toString(16).padStart(2, "0") + blue[i].toString(16).padStart(2, "0"),
-                                    opacity: 1,
-                                    weight: 2
-                                }
+                    const red = Array.from({length: this.option.symbol.classes}, (v, i) => Math.round(start[0] + (end[0] - start[0]) / (this.option.symbol.classes - 1) * i) );
+                    const green = Array.from({length: this.option.symbol.classes}, (v, i) => Math.round(start[1] + (end[1] - start[1]) / (this.option.symbol.classes - 1) * i) );
+                    const blue = Array.from({length: this.option.symbol.classes}, (v, i) => Math.round(start[2] + (end[2] - start[2]) / (this.option.symbol.classes - 1) * i) );
+                    this.feature.renderer.class.breaks = Array.from({length: this.option.symbol.classes},(item,i) => {
+                        return {
+                            auto: true,
+                            min: Math.round((min + (max - min) / (this.option.symbol.classes) * i) * 1000 ) / 1000,
+                            max: Math.round((min + (max - min) / (this.option.symbol.classes) * (i + 1) ) * 1000 ) / 1000,
+                            min_2: Math.round((min + (max - min) / (this.option.symbol.classes) * i) * 1000 ) / 1000,
+                            max_2: Math.round((min + (max - min) / (this.option.symbol.classes) * (i + 1) ) * 1000 ) / 1000,
+                            label: (min + (max - min) / (this.option.symbol.classes) * i).toFixed(3) + "-" + (min + (max - min) / (this.option.symbol.classes) * (i + 1)).toFixed(3),
+                            label_2: (min + (max - min) / (this.option.symbol.classes) * i).toFixed(3) + "-" + (min + (max - min) / (this.option.symbol.classes) * (i + 1)).toFixed(3),
+                            style: {
+                                radius: 6,
+                                fillColor: '#' + red[i].toString(16).padStart(2, "0") + green[i].toString(16).padStart(2, "0") + blue[i].toString(16).padStart(2, "0"),
+                                fillOpacity: 1,
+                                color: '#' + red[i].toString(16).padStart(2, "0") + green[i].toString(16).padStart(2, "0") + blue[i].toString(16).padStart(2, "0"),
+                                opacity: 1,
+                                weight: 2
+                            },
+                            style_2: {
+                                radius: 6,
+                                fillColor: '#' + red[i].toString(16).padStart(2, "0") + green[i].toString(16).padStart(2, "0") + blue[i].toString(16).padStart(2, "0"),
+                                fillOpacity: 1,
+                                color: '#' + red[i].toString(16).padStart(2, "0") + green[i].toString(16).padStart(2, "0") + blue[i].toString(16).padStart(2, "0"),
+                                opacity: 1,
+                                weight: 2
                             }
-                        })
-                    }
+                        }
+                    });
                 })
             }
         });
     }
 
     //tile
-    generateTile(){
+    /*generateTile(){
         if (!this.feature) return;
         swal({
             title: 'warning',
@@ -445,19 +438,6 @@ export class FeatureComponent implements OnInit {
             cancelButtonText: 'Cancel'
         }).then(result => {
             if (result.value) {
-                /*const req = new HttpRequest('GET', this.configService.config.api.web_api + "/features/generate/" + this.feature.name,  {
-                    reportProgress: true
-                });
-                this.http.request(req).pipe(
-                    tap(event => {
-                        console.log(event);
-                        this.option.tile.message = this.option.tile.message + "\n";
-                    }),last()
-                ) .subscribe((res:any) => {
-                    if (res.body.result) {
-                        this.feature.image = true;
-                    }
-                });*/
                 this.featureService.generate(this.feature.name).subscribe(res => {
                    if (res.result) {
                        this.feature.image = true;
@@ -471,7 +451,7 @@ export class FeatureComponent implements OnInit {
                 });
             }
         });
-    }
+    }*/
 
     //table
     startRecordEdit(item) {
@@ -486,7 +466,7 @@ export class FeatureComponent implements OnInit {
     saveRecordEdit(item) {
         item.properties = Object.assign({}, item.properties_2);
         item.edit = false;
-        this.featureService.updateProperty(this.feature.name, item).subscribe();
+        //this.featureService.updateProperty(this.feature.name, item).subscribe();
     }
 
     search() {

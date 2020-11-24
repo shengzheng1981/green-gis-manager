@@ -71,7 +71,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="panel">
+                        <!--<div class="panel">
                             <div class="panel-heading">
                                 <span class="panel-title">Tile Info</span>
                             </div>
@@ -100,14 +100,14 @@
                                     </tbody>
                                 </nz-table>
                             </div>
-                        </div>
+                        </div>-->
                     </nz-tab>
                     <nz-tab nzTitle="Field">
                         <div class="table-container">
                             <div class="table-toolbar">
                                 <button class="btn btn-primary" [disabled]="true">Add</button>
                             </div>
-                            <nz-table #fieldTable [nzFrontPagination]="false" [nzData]="feature.properties" [nzShowPagination]="false" [nzScroll]="{'y': '500px'}">
+                            <nz-table #fieldTable [nzFrontPagination]="false" [nzData]="feature.fields" [nzShowPagination]="false" [nzScroll]="{'y': '500px'}">
                                 <thead>
                                 <tr>
                                     <!--<th nzShowCheckbox [(nzChecked)]="option.field.all_checked" [nzIndeterminate]="option.field.indeterminate" (nzCheckedChange)="checkAllFields($event)"></th>-->
@@ -137,7 +137,7 @@
                                     <td style="width: 120px;">{{item.type}}</td>
                                     <td>
                                         <div class="editable-cell-action">
-                                            <button class="btn btn-primary" (click)="deleteField(item)">Delete</button>
+                                            <button class="btn btn-primary" [disabled]="true" (click)="deleteField(item)">Delete</button>
                                         </div>
                                     </td>
                                 </tr>
@@ -165,7 +165,7 @@
                                 <div class="category-renderer" *ngSwitchCase="1">
                                     <div class="category-field">
                                         <nz-select [(ngModel)]="feature.renderer.category.field_2" nzAllowClear nzPlaceHolder="Choose Field" [compareWith]="compareField">
-                                            <nz-option [nzValue]="field" [nzLabel]="field.name" *ngFor="let field of feature.properties"></nz-option>
+                                            <nz-option [nzValue]="field" [nzLabel]="field.name" *ngFor="let field of feature.fields"></nz-option>
                                         </nz-select>
                                         <input type="color" nz-input [(ngModel)]="option.symbol.start_color" (ngModelChange)="ribbon()">
                                         <input type="color" nz-input [(ngModel)]="option.symbol.end_color" (ngModelChange)="ribbon()">
@@ -285,7 +285,7 @@
                                 <div class="class-renderer" *ngSwitchCase="2">
                                     <div class="class-field">
                                         <nz-select [(ngModel)]="feature.renderer.class.field_2" nzAllowClear nzPlaceHolder="Choose Field" [compareWith]="compareField">
-                                            <ng-container *ngFor="let field of feature.properties">
+                                            <ng-container *ngFor="let field of feature.fields">
                                                 <nz-option [nzValue]="field" [nzLabel]="field.name" *ngIf="field.type=='integer64' || field.type=='integer32' || field.type=='real' "></nz-option>
                                             </ng-container>
                                         </nz-select>
@@ -429,7 +429,7 @@
                                     <div class="info-item">
                                         <div class="info-label">field</div>
                                         <nz-select [(ngModel)]="feature.label.field" nzAllowClear nzPlaceHolder="Choose Field" [compareWith]="compareField">
-                                            <nz-option *ngFor="let field of feature.properties" [nzValue]="field" [nzLabel]="field.name" ></nz-option>
+                                            <nz-option *ngFor="let field of feature.fields" [nzValue]="field" [nzLabel]="field.name" ></nz-option>
                                         </nz-select>
                                     </div>
                                     <div class="info-item">
@@ -535,13 +535,13 @@
                                 <nz-table #dataTable [nzFrontPagination]="true" [nzData]="option.table.result" [nzShowPagination]="true" [nzBordered]="true" [nzScroll]="{ x: '800px', y: '500px' }">
                                     <thead>
                                     <tr>
-                                        <th style="word-break: normal; min-width: 120px; max-width: 120px;" nzWidth="120px" *ngFor="let field of feature.properties">{{field.name}}</th>
+                                        <th style="word-break: normal; min-width: 120px; max-width: 120px;" nzWidth="120px" *ngFor="let field of feature.fields">{{field.name}}</th>
                                         <th style="text-align: center; min-width: 240px;" nzWidth="240px">Action</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <tr *ngFor="let item of dataTable.data">
-                                        <td style="word-break: normal; min-width: 120px; max-width: 120px;" nzWidth="120px"  *ngFor="let field of feature.properties">
+                                        <td style="word-break: normal; min-width: 120px; max-width: 120px;" nzWidth="120px"  *ngFor="let field of feature.fields">
 
                                             <div class="editable-cell">
                                                 <div class="editable-cell-text-wrapper" *ngIf="!item.edit">

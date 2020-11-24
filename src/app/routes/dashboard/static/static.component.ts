@@ -14,7 +14,7 @@ export class StaticComponent implements OnInit {
     features = [];
     map : any;
 
-    @ViewChild('map') mapDiv: ElementRef;
+    @ViewChild('map', { static: true }) mapDiv: ElementRef;
 
     constructor(private http: HttpClient, private featureService: FeatureService, private configService: ConfigService) {
     }

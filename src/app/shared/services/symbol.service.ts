@@ -22,9 +22,9 @@ export class SymbolService {
         return this.http.get(this.url + '/type/' + type);
     }
 
-    getByGeomType(geomtype: number): Observable<any> {
-        return this.http.get(this.url + '/geomtype/' + geomtype);
-    }
+    /*getByGeomType(geotype: number): Observable<any> {
+        return this.http.get(this.url + '/geomtype/' + geotype);
+    }*/
 
     create(symbol: any): Observable<any> {
         return this.http.post(this.url + "/create", { symbol : symbol });
