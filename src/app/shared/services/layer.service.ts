@@ -6,9 +6,9 @@ import {ConfigService} from './config.service';
 @Injectable({
   providedIn: 'root'
 })
-export class MapService {
+export class LayerService {
 
-    public url = this.configService.config.api.web_api + '/maps';  // URL to web API
+    public url = this.configService.config.api.web_api + '/layers';  // URL to web API
 
 
     constructor(private http: HttpClient, private configService: ConfigService) {
@@ -18,16 +18,16 @@ export class MapService {
         return this.http.get(this.url + '/');
     }
 
-    create(map: any): Observable<any> {
-        return this.http.post(this.url + "/create", { map : map });
+    create(layer: any): Observable<any> {
+        return this.http.post(this.url + "/create", { layer : layer });
     }
 
     delete(id: string): Observable<any> {
         return this.http.post(this.url + '/' + id + '/remove', {});
     }
 
-    update(map: any): Observable<any> {
-        return this.http.post(this.url + '/' + map._id + '/update', { map:  map });
+    update(layer: any): Observable<any> {
+        return this.http.post(this.url + '/' + layer._id + '/update', { layer:  layer });
     }
 
 }

@@ -1,0 +1,548 @@
+<div class="module-content">
+    <div class="module-header">
+        <h5 class="module-header-title"><i class="fas fa-table"></i>Layer</h5>
+        <div class="module-header-action">
+            <button class="btn btn-primary" (click)="layerDialog.show()">Add</button>
+        </div>
+    </div>
+    <div class="module-body">
+        <div class="panel panel-grid">
+            <div class="panel-heading">
+                <span class="panel-title">Layer List</span>
+            </div>
+            <div class="panel-body">
+                <div class="list">
+                    <div class="list-body">
+                        <div *ngFor="let item of layers" class="list-grid-item list-grid1" [ngClass]="{'active': layer && item._id == layer._id}" (click)="active(item)">
+                            <span class="area-a">{{item.name}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-empty" *ngIf="!layers || layers.length == 0">Add</div>
+            </div>
+        </div>
+        <div class="panel panel-grid">
+            <div class="panel-heading">
+                <span class="panel-title">Layer Detail{{layer? (' - ' + layer.name) : ''}}</span>
+            </div>
+            <div class="panel-body">
+                <nz-tabset *ngIf="layer">
+                    <nz-tab nzTitle="General">
+                        <div class="panel">
+                            <div class="panel-heading">
+                                <span class="panel-title">General Info</span>
+                            </div>
+                            <div class="panel-body">
+                                <div class="info-form" style="grid-gap: 10px;">
+                                    <div class="info-item">
+                                        <div class="info-label">name</div>
+                                        <div class="info-value">
+                                            <input nz-input [(ngModel)]="layer.name" required>
+                                        </div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">zoom min</div>
+                                        <div class="info-value">
+                                            <input nz-input type="number" [(ngModel)]="layer.min" required>
+                                        </div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">zoom max</div>
+                                        <div class="info-value">
+                                            <input nz-input type="number" [(ngModel)]="layer.max" required>
+                                        </div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">feature class</div>
+                                        <nz-select [(ngModel)]="layer.class" nzAllowClear nzPlaceHolder="Choose Field" [compareWith]="compareObject" required>
+                                            <nz-option *ngFor="let item of classes" [nzValue]="item" [nzLabel]="item.name" ></nz-option>
+                                        </nz-select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </nz-tab>
+                    <nz-tab nzTitle="Symbol">
+                        <div class="symbol-container">
+                            <div class="symbol-type">
+                                <nz-radio-group [(ngModel)]="layer.renderer.method" (change)="ribbon()">
+                                    <label nz-radio [nzValue]="0" >Simple Renderer</label>
+                                    <label nz-radio [nzValue]="1" >Category Renderer</label>
+                                    <label nz-radio [nzValue]="2" >Class Renderer</label>
+                                </nz-radio-group>
+                            </div>
+                            <div class="symbol-detail" [ngSwitch]="layer.renderer.method">
+                                <div class="simple-renderer" *ngSwitchCase="0">
+                                    <!--<div class="input-group">
+                                        <nz-select style="width: 240px;" [(ngModel)]="layer.renderer.simple.symbol" nzAllowClear nzPlaceHolder="Choose Symbol" [compareWith]="compareObject">
+                                            <nz-option [nzValue]="symbol" [nzLabel]="symbol.name" *ngFor="let symbol of option.symbols"></nz-option>
+                                        </nz-select>
+                                    </div>-->
+                                    <div class="info-form" style="grid-gap: 10px;">
+                                        <div class="info-item">
+                                            <div class="info-label">type</div>
+                                            <div class="info-value">
+                                                <nz-select style="width: 240px;" [(ngModel)]="layer.renderer.simple.symbol.type" nzPlaceHolder="Choose Symbol Type">
+                                                    <nz-option [nzValue]="10" nzLabel="Circle Symbol"></nz-option>
+                                                    <nz-option [nzValue]="11" nzLabel="Marker Symbol"></nz-option>
+                                                    <nz-option [nzValue]="20" nzLabel="Line Symbol"></nz-option>
+                                                    <nz-option [nzValue]="30" nzLabel="Fill Symbol"></nz-option>
+                                                </nz-select>
+                                            </div>
+                                        </div>
+                                        <div class="info-item"></div>
+                                        <div class="info-item">
+                                            <div class="info-label">radius</div>
+                                            <div class="info-value">
+                                                <input nz-input type="number" [(ngModel)]="layer.renderer.simple.symbol.style.radius">
+                                            </div>
+                                        </div>
+                                        <div class="info-item"></div>
+                                        <div class="info-item">
+                                            <div class="info-label">width</div>
+                                            <div class="info-value">
+                                                <input nz-input type="number" [(ngModel)]="layer.renderer.simple.symbol.style.width">
+                                            </div>
+                                        </div>
+                                        <div class="info-item">
+                                            <div class="info-label">height</div>
+                                            <div class="info-value">
+                                                <input nz-input type="number" [(ngModel)]="layer.renderer.simple.symbol.style.height">
+                                            </div>
+                                        </div>
+                                        <div class="info-item">
+                                            <div class="info-label">offsetX</div>
+                                            <div class="info-value">
+                                                <input nz-input type="number" [(ngModel)]="layer.renderer.simple.symbol.style.offsetX">
+                                            </div>
+                                        </div>
+                                        <div class="info-item">
+                                            <div class="info-label">offsetY</div>
+                                            <div class="info-value">
+                                                <input nz-input type="number" [(ngModel)]="layer.renderer.simple.symbol.style.offsetY">
+                                            </div>
+                                        </div>
+
+                                        <div class="info-item">
+                                            <div class="info-label">icon</div>
+                                            <div class="info-value">
+                                                <img *ngIf="layer.renderer.simple.symbol.style.icon" style="height: 24px; width: 24px;" [src]="configService.config.api.web_api + '/images/' + layer.renderer.simple.symbol.style.icon"/>
+                                                <label class="btn btn-success">
+                                                    <input type="file" name="file" style="display: none;" (change)="upload($event, layer.renderer.simple.symbol)" accept="image/*"/>
+                                                    Icon
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="info-item"></div>
+
+                                        <div class="info-item">
+                                            <div class="info-label">strokeColor</div>
+                                            <div class="info-value">
+                                                <input nz-input type="color" [(ngModel)]="layer.renderer.simple.symbol.style.strokeColor">
+                                            </div>
+                                        </div>
+                                        <div class="info-item">
+                                            <div class="info-label">strokeOpacity</div>
+                                            <div class="info-value">
+                                                <input nz-input type="number" [(ngModel)]="layer.renderer.simple.symbol.style.strokeOpacity">
+                                            </div>
+                                        </div>
+
+                                        <div class="info-item">
+                                            <div class="info-label">fillColor</div>
+                                            <div class="info-value">
+                                                <input nz-input type="color" [(ngModel)]="layer.renderer.simple.symbol.style.fillColor">
+                                            </div>
+                                        </div>
+                                        <div class="info-item">
+                                            <div class="info-label">fillOpacity</div>
+                                            <div class="info-value">
+                                                <input nz-input type="number" [(ngModel)]="layer.renderer.simple.symbol.style.fillOpacity">
+                                            </div>
+                                        </div>
+
+                                        <div class="info-item">
+                                            <div class="info-label">lineWidth</div>
+                                            <div class="info-value">
+                                                <input nz-input type="number" [(ngModel)]="layer.renderer.simple.symbol.style.lineWidth">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="category-renderer" *ngSwitchCase="1">
+                                    <div class="category-field">
+                                        <nz-select [(ngModel)]="layer.renderer.category.field_2" nzAllowClear nzPlaceHolder="Choose Field" [compareWith]="compareField">
+                                            <nz-option [nzValue]="field" [nzLabel]="field.name" *ngFor="let field of layer.class.fields"></nz-option>
+                                        </nz-select>
+                                        <input type="color" nz-input [(ngModel)]="option.symbol.start_color" (ngModelChange)="ribbon()">
+                                        <input type="color" nz-input [(ngModel)]="option.symbol.end_color" (ngModelChange)="ribbon()">
+                                        <canvas style="height: 32px; width: 100%" #ribbonCanvas></canvas>
+                                        <button class="btn btn-primary" (click)="createCategories()">Create</button>
+                                    </div>
+                                    <div class="category-table">
+                                        <nz-table #categoryTable [nzFrontPagination]="false" [nzData]="layer.renderer.category.categories" [nzShowPagination]="false" [nzScroll]="{'y': '500px'}">
+                                            <thead>
+                                            <tr>
+                                                <th style="width: 150px;">Label</th>
+                                                <th style="width: 150px;">Value</th>
+                                                <th style="width: 120px;">Radius</th>
+                                                <th style="width: 120px;">Fill Color</th>
+                                                <th style="width: 120px;">Fill Opacity</th>
+                                                <th style="width: 120px;">Stroke Width</th>
+                                                <th style="width: 120px;">Stroke Color</th>
+                                                <th style="width: 120px;">Stroke Opacity</th>
+                                                <th style="text-align: center">Action</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr *ngFor="let item of categoryTable.data">
+                                                <td style="width: 150px;">
+                                                    <div class="editable-cell">
+                                                        <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
+                                                            {{item.label}}
+                                                        </div>
+                                                        <div class="editable-cell-input-wrapper" *ngIf="item.edit">
+                                                            <input type="text" nz-input [(ngModel)]="item.label_2">
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td style="width: 150px;">
+                                                    <div class="editable-cell">
+                                                        <div class="editable-cell-text-wrapper">
+                                                            {{item.value}}
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td style="width: 120px;">
+                                                    <div class="editable-cell">
+                                                        <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
+                                                            {{item.symbol?.style?.radius}}
+                                                        </div>
+                                                        <div class="editable-cell-input-wrapper" *ngIf="item.edit">
+                                                            <input type="text" nz-input [(ngModel)]="item.symbol_2.style.radius">
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td style="width: 120px;">
+                                                    <div class="editable-cell">
+                                                        <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
+                                                            <input type="color" nz-input [ngModel]="item.symbol?.style?.fillColor" readonly  [disabled]="true">
+                                                        </div>
+                                                        <div class="editable-cell-input-wrapper" *ngIf="item.edit">
+                                                            <input type="color" nz-input [(ngModel)]="item.symbol_2.style.fillColor">
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td style="width: 120px;">
+                                                    <div class="editable-cell">
+                                                        <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
+                                                            {{item.symbol?.style?.fillOpacity}}
+                                                        </div>
+                                                        <div class="editable-cell-input-wrapper" *ngIf="item.edit">
+                                                            <input type="text" nz-input [(ngModel)]="item.symbol_2.style.fillOpacity">
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td style="width: 120px;">
+                                                    <div class="editable-cell">
+                                                        <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
+                                                            {{item.symbol?.style?.lineWidth}}
+                                                        </div>
+                                                        <div class="editable-cell-input-wrapper" *ngIf="item.edit">
+                                                            <input type="text" nz-input [(ngModel)]="item.symbol_2.style.lineWidth">
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td style="width: 120px;">
+                                                    <div class="editable-cell">
+                                                        <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
+                                                            <input type="color" nz-input [ngModel]="item.symbol?.style?.strokeColor" readonly [disabled]="true">
+                                                        </div>
+                                                        <div class="editable-cell-input-wrapper" *ngIf="item.edit">
+                                                            <input type="color" nz-input [(ngModel)]="item.symbol_2.style.strokeColor">
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td style="width: 120px;">
+                                                    <div class="editable-cell">
+                                                        <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
+                                                            {{item.symbol?.style?.strokeOpacity}}
+                                                        </div>
+                                                        <div class="editable-cell-input-wrapper" *ngIf="item.edit">
+                                                            <input type="text" nz-input [(ngModel)]="item.symbol_2.style.strokeOpacity">
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="editable-cell-action">
+                                                        <ng-container *ngIf="!item.edit">
+                                                            <button class="btn btn-primary" (click)="startSymbolEdit(item)">Edit</button>
+                                                        </ng-container>
+                                                        <ng-container *ngIf="item.edit">
+                                                            <button class="btn btn-success" (click)="saveSymbolEdit(item)">Save</button>
+                                                            <button class="btn btn-primary" (click)="cancelSymbolEdit(item)">Cancel</button>
+                                                        </ng-container>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </nz-table>
+                                    </div>
+                                </div>
+                                <div class="class-renderer" *ngSwitchCase="2">
+                                    <div class="class-field">
+                                        <nz-select [(ngModel)]="layer.renderer.class.field_2" nzAllowClear nzPlaceHolder="Choose Field" [compareWith]="compareField">
+                                            <ng-container *ngFor="let field of layer.class.fields">
+                                                <nz-option [nzValue]="field" [nzLabel]="field.name" *ngIf="field.type=='integer64' || field.type=='integer32' || field.type=='real' "></nz-option>
+                                            </ng-container>
+                                        </nz-select>
+                                        <input type="color" nz-input [(ngModel)]="option.symbol.start_color" (ngModelChange)="ribbon()">
+                                        <input type="color" nz-input [(ngModel)]="option.symbol.end_color" (ngModelChange)="ribbon()">
+                                        <canvas style="height: 32px; width: 100%" #ribbonCanvas></canvas>
+                                        <input type="number" nz-input [(ngModel)]="option.symbol.classes" min="2" max="20" step="1">
+                                        <button class="btn btn-primary" (click)="createClasses()">Create</button>
+                                    </div>
+                                    <div class="class-table">
+                                        <nz-table #classTable [nzFrontPagination]="false" [nzData]="layer.renderer.class.breaks" [nzShowPagination]="false" [nzScroll]="{'y': '500px'}">
+                                            <thead>
+                                            <tr>
+                                                <th style="width: 150px;">Label</th>
+                                                <th style="width: 120px;">Min</th>
+                                                <th style="width: 120px;">Max</th>
+                                                <th style="width: 80px;">Radius</th>
+                                                <th style="width: 120px;">Fill Color</th>
+                                                <th style="width: 120px;">Fill Opacity</th>
+                                                <th style="width: 100px;">Stroke Width</th>
+                                                <th style="width: 120px;">Stroke Color</th>
+                                                <th style="width: 120px;">Stroke Opacity</th>
+                                                <th style="text-align: center">Action</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr *ngFor="let item of classTable.data">
+                                                <td style="width: 150px;">
+                                                    <div class="editable-cell">
+                                                        <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
+                                                            {{item.label}}
+                                                        </div>
+                                                        <div class="editable-cell-input-wrapper" *ngIf="item.edit">
+                                                            <input type="text" nz-input [(ngModel)]="item.label_2">
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td style="width: 120px;">
+                                                    <div class="editable-cell">
+                                                        <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
+                                                            {{item.min}}
+                                                        </div>
+                                                        <div class="editable-cell-input-wrapper" *ngIf="item.edit">
+                                                            <input type="text" nz-input [(ngModel)]="item.min_2">
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td style="width: 120px;">
+                                                    <div class="editable-cell">
+                                                        <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
+                                                            {{item.max}}
+                                                        </div>
+                                                        <div class="editable-cell-input-wrapper" *ngIf="item.edit">
+                                                            <input type="text" nz-input [(ngModel)]="item.max_2">
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td style="width: 120px;">
+                                                    <div class="editable-cell">
+                                                        <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
+                                                            {{item.symbol?.style?.radius}}
+                                                        </div>
+                                                        <div class="editable-cell-input-wrapper" *ngIf="item.edit">
+                                                            <input type="text" nz-input [(ngModel)]="item.symbol_2.style.radius">
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td style="width: 120px;">
+                                                    <div class="editable-cell">
+                                                        <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
+                                                            <input type="color" nz-input [ngModel]="item.symbol?.style?.fillColor" readonly  [disabled]="true">
+                                                        </div>
+                                                        <div class="editable-cell-input-wrapper" *ngIf="item.edit">
+                                                            <input type="color" nz-input [(ngModel)]="item.symbol_2.style.fillColor">
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td style="width: 120px;">
+                                                    <div class="editable-cell">
+                                                        <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
+                                                            {{item.symbol?.style?.fillOpacity}}
+                                                        </div>
+                                                        <div class="editable-cell-input-wrapper" *ngIf="item.edit">
+                                                            <input type="text" nz-input [(ngModel)]="item.symbol_2.style.fillOpacity">
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td style="width: 120px;">
+                                                    <div class="editable-cell">
+                                                        <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
+                                                            {{item.symbol?.style?.lineWidth}}
+                                                        </div>
+                                                        <div class="editable-cell-input-wrapper" *ngIf="item.edit">
+                                                            <input type="text" nz-input [(ngModel)]="item.symbol_2.style.lineWidth">
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td style="width: 120px;">
+                                                    <div class="editable-cell">
+                                                        <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
+                                                            <input type="color" nz-input [ngModel]="item.symbol?.style?.strokeColor" readonly [disabled]="true">
+                                                        </div>
+                                                        <div class="editable-cell-input-wrapper" *ngIf="item.edit">
+                                                            <input type="color" nz-input [(ngModel)]="item.symbol_2.style.strokeColor">
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td style="width: 120px;">
+                                                    <div class="editable-cell">
+                                                        <div class="editable-cell-text-wrapper" *ngIf="!item.edit">
+                                                            {{item.symbol?.style?.strokeOpacity}}
+                                                        </div>
+                                                        <div class="editable-cell-input-wrapper" *ngIf="item.edit">
+                                                            <input type="text" nz-input [(ngModel)]="item.symbol_2.style.strokeOpacity">
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="editable-cell-action">
+                                                        <ng-container *ngIf="!item.edit">
+                                                            <button class="btn btn-primary" (click)="startSymbolEdit(item)">Edit</button>
+                                                        </ng-container>
+                                                        <ng-container *ngIf="item.edit">
+                                                            <button class="btn btn-success" (click)="saveSymbolEdit(item)">Save</button>
+                                                            <button class="btn btn-primary" (click)="cancelSymbolEdit(item)">Cancel</button>
+                                                        </ng-container>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </nz-table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </nz-tab>
+                    <nz-tab nzTitle="Label">
+                        <div class="label-container">
+                            <div class="panel">
+                                <div class="label-info-form" >
+                                    <div class="info-item">
+                                        <div class="info-label">field</div>
+                                        <nz-select [(ngModel)]="layer.label.field" nzAllowClear nzPlaceHolder="Choose Field" [compareWith]="compareField">
+                                            <nz-option *ngFor="let field of layer.class.fields" [nzValue]="field" [nzLabel]="field.name" ></nz-option>
+                                        </nz-select>
+                                    </div>
+                                    <div class="info-item">
+                                    </div>
+                                    <div class="info-item">
+                                    </div>
+                                    <div class="info-item">
+                                    </div>
+                                    <div class="info-item">
+                                    </div>
+
+                                    <div class="info-item">
+                                        <div class="info-label">zoom min</div>
+                                        <div class="info-value">
+                                            <input nz-input [(ngModel)]="layer.label.zoom.min">
+                                        </div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">zoom max</div>
+                                        <div class="info-value">
+                                            <input nz-input [(ngModel)]="layer.label.zoom.max">
+                                        </div>
+                                    </div>
+                                    <div class="info-item">
+                                    </div>
+                                    <div class="info-item">
+                                    </div>
+                                    <div class="info-item">
+                                    </div>
+
+                                    <div class="info-item">
+                                        <div class="info-label">font family</div>
+                                        <div class="info-value">
+                                            <input nz-input [(ngModel)]="layer.label.font.family">
+                                        </div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">font size</div>
+                                        <div class="info-value">
+                                            <input nz-input [(ngModel)]="layer.label.font.size">
+                                        </div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">font color</div>
+                                        <div class="info-value">
+                                            <input type="color" nz-input [(ngModel)]="layer.label.font.color">
+                                        </div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">font bold</div>
+                                        <div class="info-value">
+                                            <input nz-input [(ngModel)]="layer.label.font.bold">
+                                        </div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">padding</div>
+                                        <div class="info-value">
+                                            <input nz-input [(ngModel)]="layer.label.background.padding">
+                                        </div>
+                                    </div>
+
+                                    <div class="info-item">
+                                        <div class="info-label">back visible</div>
+                                        <div class="info-value">
+                                            <nz-switch [(ngModel)]="layer.label.background.visible"></nz-switch>
+                                        </div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">back color</div>
+                                        <div class="info-value">
+                                            <input type="color" nz-input [(ngModel)]="layer.label.background.color">
+                                        </div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">border visible</div>
+                                        <div class="info-value">
+                                            <nz-switch [(ngModel)]="layer.label.border.visible"></nz-switch>
+                                        </div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">border color</div>
+                                        <div class="info-value">
+                                            <input type="color" nz-input [(ngModel)]="layer.label.border.color">
+                                        </div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">border width</div>
+                                        <div class="info-value">
+                                            <input nz-input [(ngModel)]="layer.label.border.width">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </nz-tab>
+                </nz-tabset>
+                <div class="panel-empty" *ngIf="!layer">Select Layer</div>
+            </div>
+            <div class="panel-footer">
+                <button class="btn btn-danger" (click)="delete()" [disabled]="!layer">Delete</button>
+                <div class="panel-footer-action">
+                    <button class="btn btn-success" (click)="update()" [disabled]="!layer">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<app-layer-dialog #layerDialog (onSubmit)="create($event)"></app-layer-dialog>

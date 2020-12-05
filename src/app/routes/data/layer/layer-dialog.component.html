@@ -1,0 +1,40 @@
+<nz-modal [(nzVisible)]="visible" [nzTitle]="modalTitle" [nzContent]="modalContent" [nzFooter]="modalFooter"
+          [nzWidth]="600" (nzOnCancel)="hide()">
+    <form #createForm="ngForm">
+        <ng-template #modalTitle>
+            图层
+        </ng-template>
+        <ng-template #modalContent>
+            <div class="info-form" style="grid-gap: 10px;">
+                <div class="info-item">
+                    <div class="info-label">name</div>
+                    <div class="info-value">
+                        <input nz-input name="name" [(ngModel)]="object.name" required>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">zoom min</div>
+                    <div class="info-value">
+                        <input nz-input type="number" name="min" [(ngModel)]="object.min" required>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">zoom max</div>
+                    <div class="info-value">
+                        <input nz-input type="number" name="max" [(ngModel)]="object.max" required>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">feature class</div>
+                    <nz-select [(ngModel)]="object.class" name="class" nzAllowClear nzPlaceHolder="Choose Class" [compareWith]="compareObject" required>
+                        <nz-option *ngFor="let item of classes" [nzValue]="item" [nzLabel]="item.name" ></nz-option>
+                    </nz-select>
+                </div>
+            </div>
+        </ng-template>
+        <ng-template #modalFooter>
+            <button class="btn btn-default" (click)="hide()">取消</button>
+            <button class="btn btn-success" (click)="submit()" [disabled]="!createForm.form.valid">确定</button>
+        </ng-template>
+    </form>
+</nz-modal>

@@ -1,0 +1,25 @@
+
+
+.base-map {
+    height: 100%;
+    position: relative;
+}
+
+.base-map .gaode-base-map {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    background: var(--panel-default-color) !important;
+    top: 0px;
+    left: 0px;
+}
+
+.base-map .green-base-map {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background-color: transparent !important;
+    z-index: 1
+}

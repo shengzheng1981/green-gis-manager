@@ -23,7 +23,7 @@ export class FeatureService {
     }
 
     delete(name: string): Observable<any> {
-        return this.http.get(this.class_url + '/' + name + '/remove');
+        return this.http.post(this.class_url + '/' + name + '/remove', {});
     }
 
     update(featureClass: any): Observable<any> {
@@ -50,12 +50,12 @@ export class FeatureService {
         return this.http.post(this.feature_url + '/statistic/' + name + '/' + field, {});
     }
 
-    search(name: string, condition: any): Observable<any> {
-        return this.http.post(this.feature_url + '/' + name + '/query', {condition: condition} );
+    search(name: string, condition: any, fields: any): Observable<any> {
+        return this.http.post(this.feature_url + '/query/' + name, {condition: condition, fields: fields} );
     }
 
     count(name: string, condition: any): Observable<any> {
-        return this.http.post(this.feature_url + '/' + name + '/count', {condition: condition} );
+        return this.http.post(this.feature_url + '/count/' + name, {condition: condition} );
     }
 
     /*updateProperty(name: string, feature: any){

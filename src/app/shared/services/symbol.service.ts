@@ -31,7 +31,7 @@ export class SymbolService {
     }
 
     delete(id: string): Observable<any> {
-        return this.http.get(this.url + '/' + id + '/remove');
+        return this.http.post(this.url + '/' + id + '/remove', {});
     }
 
     update(symbol: any): Observable<any> {

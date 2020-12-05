@@ -1,0 +1,17 @@
+.info-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  //border-top: 1px solid #e8e8e8;
+  padding-top: 10px;
+  .info-item {
+    display: grid;
+    grid-template-columns: 3fr 7fr;
+    padding: 8px 0;
+    .info-label {
+      color: #999;
+      font-size: 14px;
+      font-weight: normal;
+      text-align: left;
+    }
+  }
+}
