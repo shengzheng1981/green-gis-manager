@@ -23,7 +23,7 @@
     "core-js": "^2.6.3",
     "geojson-vt": "^3.2.1",
     "jquery": "^3.4.0",
-    "leaflet": "^1.4.0",
+    "leaflet": "^1.6.0",
     "moment": "^2.24.0",
     "ng-zorro-antd": "^8.5.2",
     "ngx-bootstrap": "^3.2.0",
