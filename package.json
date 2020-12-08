@@ -21,7 +21,7 @@
     "@angular/router": "~9.0.6",
     "@ngx-loading-bar/http-client": "^1.0.0",
     "core-js": "^2.6.3",
-    "green-gis": "^0.4.4",
+    "green-gis": "^0.4.5",
     "jquery": "^3.4.0",
     "moment": "^2.24.0",
     "ng-zorro-antd": "^8.5.2",

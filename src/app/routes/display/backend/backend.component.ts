@@ -41,17 +41,10 @@ export class BackendComponent implements OnInit {
     switch(layer) {
         if (!this.map) return;
         if (layer.checked) {
-            if (layer.view) {
-                layer.view.visible = true;
-                this.map.redraw();
-            } else {
-                //this._drawLayer(layer);
-            }
-        } else {
-            if (layer.view) {
-                layer.view.visible = false;
-                this.map.redraw();
-            }
+            this.layers.forEach(layer => layer.checked = false);
+            layer.checked = true;
+            this.map.setTileUrl(this.configService.config.api.web_api  +  "/tiles/image/" + layer._id + "/{x}/{y}/{z}");
+            this.map.redraw();
         }
     }
 
